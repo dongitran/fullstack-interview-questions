@@ -924,40 +924,127 @@ readinessProbe:
                 </div>
                 <div class="answer">
                     <div class="answer-content">
-                        <h4>Two-Phase Commit (2PC):</h4>
-                        <p><strong>How:</strong> Coordinator hỏi "ready?" → tất cả vote → commit hoặc abort all</p>
-                        <p><strong>Pros:</strong> ACID guarantees, strong consistency, automatic rollback</p>
-                        <p><strong>Cons:</strong> Blocking protocol (locks held), coordinator là single point of failure, slow</p>
-                        <p><strong>Khi nào:</strong> Financial ledger, MUST have atomicity (payment + inventory deduction)</p>
+                        <h4>🎯 Vấn đề: Distributed Transaction</h4>
+                        <p>Khi 1 operation cần thay đổi data ở <strong>nhiều database khác nhau</strong> (ví dụ: trừ tiền ở bank A + cộng tiền ở bank B). Làm sao đảm bảo cả 2 đều thành công hoặc cả 2 đều hủy?</p>
 
-                        <h4>Saga Pattern:</h4>
-                        <p><strong>How:</strong> Series of local transactions + compensating transactions nếu fail</p>
-                        <p><strong>Pros:</strong> Non-blocking, scalable, eventual consistency OK</p>
-                        <p><strong>Cons:</strong> Complex compensations, lack of isolation, có thể thấy intermediate states</p>
-                        <p><strong>Khi nào:</strong> Order fulfillment, booking systems, long-running workflows</p>
-
-                        <h4>Saga Types:</h4>
-                        <p><strong>Choreography:</strong> Services emit events → other services listen → decentralized</p>
+                        <h4>1️⃣ Two-Phase Commit (2PC)</h4>
+                        <p><strong>Ví dụ:</strong> Chuyển tiền giữa 2 tài khoản trong cùng ngân hàng</p>
+                        
+                        <p><strong>Cách hoạt động:</strong></p>
                         <ul>
-                            <li>Pros: Simple, loose coupling</li>
-                            <li>Cons: Hard to track flow, cyclic dependencies</li>
+                            <li><strong>Phase 1 (Prepare):</strong> Coordinator hỏi tất cả "Sẵn sàng chưa?"</li>
+                            <li><strong>Phase 2 (Commit):</strong> Nếu tất cả OK → commit; Nếu 1 bên fail → rollback tất cả</li>
                         </ul>
 
-                        <p><strong>Orchestration:</strong> Orchestrator điều khiển flow → centralized</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Ưu điểm</th>
+                                    <th>Nhược điểm</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>✅ Data luôn consistent</td>
+                                    <td>❌ Chậm (phải đợi tất cả)</td>
+                                </tr>
+                                <tr>
+                                    <td>✅ Tự động rollback</td>
+                                    <td>❌ Dữ liệu bị lock trong quá trình</td>
+                                </tr>
+                                <tr>
+                                    <td>✅ Dễ hiểu</td>
+                                    <td>❌ Coordinator chết = hệ thống đứng</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>2️⃣ Saga Pattern</h4>
+                        <p><strong>Ví dụ:</strong> Đặt hàng online (thanh toán → trừ kho → giao hàng)</p>
+                        
+                        <p><strong>Cách hoạt động:</strong></p>
                         <ul>
-                            <li>Pros: Clear flow, easier debugging, timeout handling</li>
-                            <li>Cons: Orchestrator có thể bottleneck, single point of failure</li>
+                            <li>Chia thành <strong>chuỗi các bước nhỏ</strong>, mỗi bước là 1 transaction riêng</li>
+                            <li>Nếu bước 3 fail → chạy <strong>compensating</strong> để "undo" bước 1 và 2</li>
                         </ul>
 
-                        <h4>Real Decision:</h4>
+                        <p><strong>Compensating transaction là gì?</strong></p>
+                        <div class="info-box">
+                            Là hành động "hoàn tác" business operation. Ví dụ:<br>
+                            • Thanh toán thành công → Compensate = Refund<br>
+                            • Trừ kho thành công → Compensate = Cộng lại kho
+                        </div>
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Ưu điểm</th>
+                                    <th>Nhược điểm</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>✅ Nhanh, không lock data</td>
+                                    <td>❌ Phải viết code compensate</td>
+                                </tr>
+                                <tr>
+                                    <td>✅ Dễ scale</td>
+                                    <td>❌ Có thể thấy data "dở dang"</td>
+                                </tr>
+                                <tr>
+                                    <td>✅ Không cần coordinator</td>
+                                    <td>❌ Complex để debug</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>3️⃣ So sánh trực quan</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tiêu chí</th>
+                                    <th>2PC</th>
+                                    <th>Saga</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Tốc độ</td>
+                                    <td>Chậm</td>
+                                    <td>Nhanh</td>
+                                </tr>
+                                <tr>
+                                    <td>Consistency</td>
+                                    <td>Strong (ngay lập tức)</td>
+                                    <td>Eventual (cuối cùng)</td>
+                                </tr>
+                                <tr>
+                                    <td>Lock data</td>
+                                    <td>Có</td>
+                                    <td>Không</td>
+                                </tr>
+                                <tr>
+                                    <td>Complexity</td>
+                                    <td>Thấp</td>
+                                    <td>Cao</td>
+                                </tr>
+                                <tr>
+                                    <td>Use case</td>
+                                    <td>Financial (bank)</td>
+                                    <td>E-commerce, booking</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>4️⃣ Khi nào dùng gì?</h4>
                         <ul>
-                            <li><strong>Payment processing:</strong> Avoid distributed transaction! Single service handle payment</li>
-                            <li><strong>Order fulfillment:</strong> Saga (payment → inventory → shipping)</li>
-                            <li><strong>Bank transfer:</strong> 2PC nếu control cả 2 accounts, Saga nếu external</li>
+                            <li><strong>2PC:</strong> Banking core, nơi <strong>không thể chấp nhận</strong> data tạm thờ không nhất quán</li>
+                            <li><strong>Saga:</strong> Order flow, booking, nơi <strong>chấp nhận</strong> eventual consistency để đổi lấy performance</li>
+                            <li><strong>Tránh cả hai:</strong> Payment processing nên design để 1 service xử lý (không distributed)</li>
                         </ul>
 
                         <div class="warning-box">
-                            <strong>⚠️ Best Practice:</strong> Tránh distributed transactions bằng cách redesign service boundaries. Most cases không cần!
+                            <strong>💡 Reality:</strong> 90% trường hợp không cần distributed transaction. Hãy redesign service boundaries trước khi dùng 2PC hoặc Saga!
                         </div>
 
                         <span class="tag">2PC</span>
