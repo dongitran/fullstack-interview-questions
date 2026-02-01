@@ -497,11 +497,11 @@
 
     <div class="stats">
         <div class="stat-item">
-            <span class="stat-number">60</span>
+            <span class="stat-number">70</span>
             <div class="stat-label">Câu hỏi</div>
         </div>
         <div class="stat-item">
-            <span class="stat-number">8</span>
+            <span class="stat-number">9</span>
             <div class="stat-label">Chủ đề</div>
         </div>
     </div>
@@ -4420,6 +4420,278 @@ Growth: 10GB/month, +10% QPS/month
                     </div>
                 </div>
             </div>
+        </div>
+
+
+
+        <!-- Advanced Hard Questions -->
+        <div class="category">
+            <div class="category-header">
+                <span class="category-icon">🔥</span>
+                <h2 class="category-title">Advanced Hard Questions</h2>
+                <span class="category-count">10</span>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q61</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">Outbox Pattern là gì? Vì sao giúp tránh mất event?</div>
+                </div>
+                <div class="answer"><div class="answer-content">
+                    <h4>🎯 Bài toán</h4>
+                    <p>Service vừa <strong>ghi DB</strong> (tạo order) vừa <strong>publish event</strong> (OrderCreated). Nếu DB commit xong nhưng publish fail → hệ thống khác không biết order mới → lệch dữ liệu.</p>
+
+                    <h4>✅ Outbox Pattern</h4>
+                    <p>Thay vì publish trực tiếp, ta ghi event vào bảng <strong>outbox</strong> cùng transaction với business data.</p>
+                    <ul>
+                        <li>Transaction 1: INSERT orders + INSERT outbox_events</li>
+                        <li>Worker/CDC: đọc outbox → publish Kafka</li>
+                        <li>Sau khi publish thành công → mark sent</li>
+                    </ul>
+
+                    <h4>Vì sao nó “an toàn”?</h4>
+                    <ul>
+                        <li>DB commit = cả order và event đều được lưu</li>
+                        <li>Publish fail thì retry được (event vẫn nằm trong outbox)</li>
+                    </ul>
+
+                    <div class="warning-box"><strong>⚠️ Nhớ:</strong> Consumer vẫn phải idempotent (event có thể publish lại).</div>
+                    <span class="tag">Outbox</span><span class="tag">Consistency</span>
+                </div></div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header"><div class="question-meta">
+                    <span class="question-number">Q62</span>
+                    <span class="difficulty difficulty-hard">Hard</span>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="question-text">Thundering Herd khi cache miss là gì? Chặn thế nào?</div></div>
+                <div class="answer"><div class="answer-content">
+                    <h4>🎯 Bài toán</h4>
+                    <p>Cache key hết hạn → 1,000 request cùng lúc đều miss → 1,000 query đập vào DB → DB “xỉu”.</p>
+
+                    <h4>Giải pháp dễ hiểu</h4>
+                    <ul>
+                        <li><strong>Single-flight / Lock per key:</strong> chỉ 1 request được phép rebuild cache, các request còn lại đợi/nhận stale</li>
+                        <li><strong>Stale-while-revalidate:</strong> trả data cũ (stale) cho user, background refresh</li>
+                        <li><strong>Jitter TTL:</strong> TTL random nhẹ để không hết hạn cùng lúc</li>
+                        <li><strong>Request coalescing:</strong> gộp nhiều request thành 1 batch</li>
+                    </ul>
+
+                    <div class="info-box"><strong>💡 Rule:</strong> Cache càng “hot” càng cần chống herd.</div>
+                    <span class="tag">Caching</span><span class="tag">Reliability</span>
+                </div></div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header"><div class="question-meta">
+                    <span class="question-number">Q63</span>
+                    <span class="difficulty difficulty-hard">Hard</span>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="question-text">SLO/SLI/SLA khác nhau thế nào? Dùng để alert ra sao?</div></div>
+                <div class="answer"><div class="answer-content">
+                    <h4>Định nghĩa nhanh</h4>
+                    <ul>
+                        <li><strong>SLI:</strong> chỉ số đo (vd: 99th latency, error rate)</li>
+                        <li><strong>SLO:</strong> mục tiêu nội bộ (vd: 99.9% requests < 500ms)</li>
+                        <li><strong>SLA:</strong> cam kết với khách (vd: 99.5% uptime, vi phạm = đền tiền)</li>
+                    </ul>
+
+                    <h4>Alert theo “error budget”</h4>
+                    <p>Thay vì alert theo CPU, alert theo việc bạn đang “đốt” SLO nhanh tới mức nào.</p>
+                    <ul>
+                        <li>Burn nhanh → alert sớm (ảnh hưởng user)</li>
+                        <li>Burn chậm → chỉ cảnh báo giờ hành chính</li>
+                    </ul>
+
+                    <div class="warning-box"><strong>⚠️</strong> Alert nhiều không làm hệ thống ổn hơn—chỉ làm người trực kiệt sức.</div>
+                    <span class="tag">SRE</span><span class="tag">SLO</span>
+                </div></div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header"><div class="question-meta">
+                    <span class="question-number">Q64</span>
+                    <span class="difficulty difficulty-hard">Hard</span>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="question-text">Rate limiting: Token Bucket vs Leaky Bucket vs Fixed Window?</div></div>
+                <div class="answer"><div class="answer-content">
+                    <h4>So sánh dễ hiểu</h4>
+                    <ul>
+                        <li><strong>Fixed window:</strong> đếm trong 1 phút. Dễ làm nhưng có “burst” ở ranh giới phút.</li>
+                        <li><strong>Leaky bucket:</strong> chảy đều như vòi nước—ổn định, hạn chế burst.</li>
+                        <li><strong>Token bucket:</strong> tích token theo thời gian—cho phép burst nhỏ, nhưng vẫn giới hạn trung bình.</li>
+                    </ul>
+
+                    <h4>Khi dùng gì?</h4>
+                    <ul>
+                        <li>API public: Token bucket (trải nghiệm tốt)</li>
+                        <li>Protect downstream: Leaky bucket (mượt, tránh spike)</li>
+                        <li>Quick & simple: Fixed window (nhưng nhớ edge case)</li>
+                    </ul>
+                    <span class="tag">Rate Limiting</span><span class="tag">System Design</span>
+                </div></div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header"><div class="question-meta">
+                    <span class="question-number">Q65</span>
+                    <span class="difficulty difficulty-hard">Hard</span>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="question-text">Why “exactly-once” end-to-end gần như bất khả thi? Nói theo kiểu đời thường.</div></div>
+                <div class="answer"><div class="answer-content">
+                    <h4>Ví von</h4>
+                    <p>Bạn gửi bưu phẩm. Bạn không biết người nhận đã nhận chưa vì… mất sóng. Bạn gửi lại để chắc chắn. Thế là có nguy cơ người ta nhận <strong>2 lần</strong>.</p>
+                    <p>Trong hệ phân tán, timeout không nói được “đã xử lý hay chưa”.</p>
+
+                    <h4>Giải pháp thực tế</h4>
+                    <ul>
+                        <li>Chấp nhận at-least-once</li>
+                        <li>Thiết kế thao tác idempotent (làm 2 lần vẫn 1 kết quả)</li>
+                        <li>Gắn idempotency key / unique constraint</li>
+                    </ul>
+                    <span class="tag">Distributed Systems</span><span class="tag">Idempotency</span>
+                </div></div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header"><div class="question-meta">
+                    <span class="question-number">Q66</span>
+                    <span class="difficulty difficulty-hard">Hard</span>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="question-text">Index bừa bãi gây hại thế nào? Dấu hiệu nhận biết index thừa.</div></div>
+                <div class="answer"><div class="answer-content">
+                    <h4>Index không miễn phí</h4>
+                    <ul>
+                        <li>Mỗi INSERT/UPDATE/DELETE phải update index → write chậm</li>
+                        <li>Index chiếm RAM/disk → cache miss tăng</li>
+                        <li>Planner có thể chọn nhầm plan nếu stats phức tạp</li>
+                    </ul>
+
+                    <h4>Dấu hiệu index thừa</h4>
+                    <ul>
+                        <li>Index gần như không được dùng (usage thấp)</li>
+                        <li>Nhiều index trùng prefix (A,B) và (A) dư</li>
+                        <li>Bảng write-heavy nhưng latency tăng theo số index</li>
+                    </ul>
+
+                    <div class="info-box"><strong>💡 Rule:</strong> Index phục vụ query thật. Không có query → không cần index.</div>
+                    <span class="tag">Indexing</span><span class="tag">Performance</span>
+                </div></div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header"><div class="question-meta">
+                    <span class="question-number">Q67</span>
+                    <span class="difficulty difficulty-hard">Hard</span>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="question-text">N+1 trong microservices (không chỉ ORM) là gì?</div></div>
+                <div class="answer"><div class="answer-content">
+                    <h4>Ví dụ</h4>
+                    <p>API lấy list orders (50 orders) rồi gọi user-service 50 lần để lấy user info → N+1 calls.</p>
+
+                    <h4>Cách fix</h4>
+                    <ul>
+                        <li><strong>Batch API:</strong> user-service hỗ trợ /users?ids=...</li>
+                        <li><strong>Aggregation:</strong> BFF/API gateway gom dữ liệu 1 lần</li>
+                        <li><strong>Denormalize read model:</strong> order lưu snapshot userName</li>
+                        <li><strong>Cache:</strong> cache user profile theo id</li>
+                    </ul>
+                    <span class="tag">Microservices</span><span class="tag">Performance</span>
+                </div></div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header"><div class="question-meta">
+                    <span class="question-number">Q68</span>
+                    <span class="difficulty difficulty-hard">Hard</span>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="question-text">Load shedding là gì? Khi nào nên “từ chối” request?</div></div>
+                <div class="answer"><div class="answer-content">
+                    <h4>Ý tưởng</h4>
+                    <p>Khi hệ thống quá tải, xử lý tất cả request = chết toàn bộ. Load shedding là <strong>chủ động bỏ bớt</strong> để phần còn lại sống.</p>
+
+                    <h4>Khi nào làm?</h4>
+                    <ul>
+                        <li>Queue lag tăng nhanh</li>
+                        <li>DB connection pool exhausted</li>
+                        <li>P99 latency tăng gấp 10</li>
+                    </ul>
+
+                    <h4>Cách làm phổ biến</h4>
+                    <ul>
+                        <li>Return 429/503 nhanh (fail fast)</li>
+                        <li>Ưu tiên traffic quan trọng (payment > search)</li>
+                        <li>Giảm feature (disable heavy endpoints)</li>
+                    </ul>
+                    <span class="tag">Resilience</span><span class="tag">Observability</span>
+                </div></div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header"><div class="question-meta">
+                    <span class="question-number">Q69</span>
+                    <span class="difficulty difficulty-hard">Hard</span>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="question-text">Design cache invalidation cho “profile + permissions” sao cho ít bug?</div></div>
+                <div class="answer"><div class="answer-content">
+                    <h4>Vì sao khó?</h4>
+                    <p>Profile đổi ít, permissions đổi quan trọng. Cache sai = lỗi bảo mật.</p>
+
+                    <h4>Hướng an toàn</h4>
+                    <ul>
+                        <li><strong>Versioned cache key:</strong> cache:user:123:v7 (bump version khi đổi quyền)</li>
+                        <li><strong>Short TTL cho permissions:</strong> TTL nhỏ hơn profile</li>
+                        <li><strong>Event-based invalidate:</strong> UserPermissionChanged → invalidate</li>
+                        <li><strong>Fail-closed:</strong> cache miss thì check DB/authority, không đoán bừa</li>
+                    </ul>
+
+                    <div class="warning-box"><strong>⚠️</strong> Permissions cache sai nguy hiểm hơn cache chậm. Ưu tiên đúng trước, nhanh sau.</div>
+                    <span class="tag">Security</span><span class="tag">Caching</span>
+                </div></div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header"><div class="question-meta">
+                    <span class="question-number">Q70</span>
+                    <span class="difficulty difficulty-hard">Hard</span>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="question-text">Hot partition trong Kafka/DB là gì? Nhận biết và xử lý.</div></div>
+                <div class="answer"><div class="answer-content">
+                    <h4>Hot partition</h4>
+                    <p>Một partition/shard nhận quá nhiều traffic (ví dụ: key = "global"), thành nút cổ chai.</p>
+
+                    <h4>Dấu hiệu</h4>
+                    <ul>
+                        <li>Kafka lag chỉ tăng ở 1 partition</li>
+                        <li>DB shard 1 CPU 90% còn shard khác 10%</li>
+                        <li>P99 tăng dù tổng traffic không quá cao</li>
+                    </ul>
+
+                    <h4>Cách xử lý</h4>
+                    <ul>
+                        <li>Chọn partition key tốt hơn (userId thay vì constant)</li>
+                        <li>Salting key (thêm hậu tố random để phân tán)</li>
+                        <li>Tăng partitions/shards (kèm rebalancing plan)</li>
+                        <li>Cache/aggregate để giảm writes</li>
+                    </ul>
+                    <span class="tag">Kafka</span><span class="tag">Scaling</span>
+                </div></div>
+            </div>
+
         </div>
 
         <!-- Behavioral -->
