@@ -93,17 +93,42 @@
             margin-top: 0.25rem;
         }
 
-        .controls {
-            position: sticky;
-            top: 90px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem;
-            border-bottom: 1px solid var(--border);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            z-index: 99;
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            cursor: pointer;
+            font-size: 1.25rem;
             display: flex;
-            gap: 0.5rem;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .fab.visible {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        .fab:hover {
+            background: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        .fab:active {
+            transform: scale(0.95);
         }
 
         .btn {
@@ -414,15 +439,12 @@
                 font-size: 0.85rem;
             }
 
-            .controls {
-                top: 120px;
-                padding: 1.5rem;
-                gap: 1rem;
-            }
-
-            .btn {
-                flex: none;
-                padding: 0.875rem 2rem;
+            .fab {
+                bottom: 2.5rem;
+                right: 2.5rem;
+                width: 64px;
+                height: 64px;
+                font-size: 1.5rem;
             }
 
             .category-header {
@@ -482,11 +504,6 @@
             <span class="stat-number">8</span>
             <div class="stat-label">Chủ đề</div>
         </div>
-    </div>
-
-    <div class="controls">
-        <button class="btn btn-primary" onclick="toggleAll(true)">Mở tất cả</button>
-        <button class="btn btn-secondary" onclick="toggleAll(false)">Đóng tất cả</button>
     </div>
 
     <div class="container">
@@ -2591,9 +2608,14 @@ SELECT count(*) FROM pg_stat_activity;
         </p>
     </div>
 
+    <button class="fab" id="closeAllFab" onclick="toggleAll(false)" title="Đóng tất cả">
+        ✕
+    </button>
+
     <script>
         function toggleCard(card) {
             card.classList.toggle('active');
+            updateFabVisibility();
         }
 
         function toggleAll(show) {
@@ -2605,6 +2627,17 @@ SELECT count(*) FROM pg_stat_activity;
                     card.classList.remove('active');
                 }
             });
+            updateFabVisibility();
+        }
+
+        function updateFabVisibility() {
+            const fab = document.getElementById('closeAllFab');
+            const openCards = document.querySelectorAll('.question-card.active');
+            if (openCards.length > 0) {
+                fab.classList.add('visible');
+            } else {
+                fab.classList.remove('visible');
+            }
         }
 
         document.addEventListener('keydown', (e) => {
@@ -2617,6 +2650,9 @@ SELECT count(*) FROM pg_stat_activity;
                 toggleAll(false);
             }
         });
+
+        // Initialize FAB state
+        updateFabVisibility();
     </script>
 </body>
 </html>
