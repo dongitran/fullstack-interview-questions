@@ -551,29 +551,81 @@
                 </div>
                 <div class="answer">
                     <div class="answer-content">
-                        <h4>Client-Side Discovery (Consul/Eureka):</h4>
-                        <p><strong>Cách hoạt động:</strong> Service tự register, client query registry và load balance</p>
-                        <p><strong>Pros:</strong> No extra hop, flexible load balancing logic, better performance</p>
-                        <p><strong>Cons:</strong> Client phức tạp hơn, language-specific client lib, harder to manage</p>
+                        <h4>🎯 Vấn đề là gì?</h4>
+                        <p>Khi có nhiều service (user-service, payment-service...), mỗi service chạy trên nhiều instance (3-5 pods). Làm sao service A biết gọi đến IP nào của service B?</p>
+                        <p>→ Cần <strong>Service Discovery</strong> như "danh bạ điện thoại" cho các services.</p>
 
-                        <h4>Server-Side Discovery (Kubernetes Service/Load Balancer):</h4>
-                        <p><strong>Cách hoạt động:</strong> Infrastructure handle discovery và load balancing</p>
-                        <p><strong>Pros:</strong> Simple client (chỉ gọi domain), platform agnostic, centralized management</p>
-                        <p><strong>Cons:</strong> Extra hop (slight latency), limited flexibility</p>
-
-                        <h4>Real-World Choice:</h4>
+                        <h4>1️⃣ Client-Side Discovery</h4>
+                        <p><strong>Cách hoạt động:</strong></p>
                         <ul>
-                            <li><strong>Kubernetes:</strong> Dùng built-in Services (server-side) - simplest</li>
-                            <li><strong>VM/EC2:</strong> Consul + client lib hoặc load balancer</li>
-                            <li><strong>Best of both:</strong> Service mesh (Istio) - server-side nhưng advanced features</li>
+                            <li>Service tự đăng ký vào <strong>Consul/Eureka</strong> khi khởi động</li>
+                            <li>Client tự query registry để lấy danh sách IP</li>
+                            <li>Client tự chọn 1 IP để gọi (load balancing)</li>
+                        </ul>
+                        <div class="code-block">Client → Query Consul → Get IPs [10.0.1.5, 10.0.1.6] 
+  → Call 10.0.1.5</div>
+                        <p><strong>Ưu:</strong> Nhanh, không có trung gian</p>
+                        <p><strong>Nhược:</strong> Code client phức tạp, phải cài thư viện riêng</p>
+
+                        <h4>2️⃣ Server-Side Discovery</h4>
+                        <p><strong>Cách hoạt động:</strong></p>
+                        <ul>
+                            <li>Client chỉ gọi 1 <strong>domain duy nhất</strong>: <code>payment-service.internal</code></li>
+                            <li>Infrastructure (Load Balancer hoặc K8s) tự động route đến 1 healthy instance</li>
+                        </ul>
+                        <div class="code-block">Client → payment-service.internal 
+  → Load Balancer → Pick instance → 10.0.1.5</div>
+                        <p><strong>Ưu:</strong> Client đơn giản (chỉ gọi URL), dễ quản lý</p>
+                        <p><strong>Nhược:</strong> Có 1 "hop" trung gian (nhưng latency rất nhỏ)</p>
+
+                        <h4>📊 So sánh nhanh</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tiêu chí</th>
+                                    <th>Client-Side</th>
+                                    <th>Server-Side</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Client code</td>
+                                    <td>Phức tạp</td>
+                                    <td>Đơn giản</td>
+                                </tr>
+                                <tr>
+                                    <td>Tốc độ</td>
+                                    <td>Nhanh hơn chút</td>
+                                    <td>Nhanh (đủ dùng)</td>
+                                </tr>
+                                <tr>
+                                    <td>Load balancing</td>
+                                    <td>Client tự làm</td>
+                                    <td>Hệ thống làm</td>
+                                </tr>
+                                <tr>
+                                    <td>Phù hợp</td>
+                                    <td>VM/EC2 thuần</td>
+                                    <td>Kubernetes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>✅ Khi nào dùng gì?</h4>
+                        <ul>
+                            <li><strong>Chạy Kubernetes:</strong> Server-side (K8s Service) — 90% trường hợp</li>
+                            <li><strong>Chạy VM/EC2 thuần:</strong> Client-side (Consul) hoặc Load Balancer</li>
+                            <li><strong>Cần custom load balancing:</strong> Client-side</li>
+                            <li><strong>Muốn đơn giản nhất:</strong> Server-side</li>
                         </ul>
 
                         <div class="info-box">
-                            <strong>💡 Tại UrBox:</strong> Nếu đang dùng K8s thì Service + DNS đã đủ. Không cần phức tạp hóa với Consul trừ khi có yêu cầu đặc biệt.
+                            <strong>💡 Tóm lại:</strong> Client-side = client tự tìm và chọn server. Server-side = gọi 1 domain, hệ thống tự chọn server cho client. Với K8s hiện đại, dùng server-side cho đơn giản.
                         </div>
 
                         <span class="tag">Service Mesh</span>
                         <span class="tag">Consul</span>
+                        <span class="tag">Kubernetes</span>
                     </div>
                 </div>
             </div>
