@@ -1,0 +1,2370 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Câu Hỏi Phỏng Vấn - Senior Fullstack Developer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --gray: #6b7280;
+            --light: #f9fafb;
+            --white: #ffffff;
+            --border: #e5e7eb;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--light);
+            padding: 0;
+            margin: 0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.95;
+        }
+
+        .stats {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .stat-item {
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
+            padding: 0.75rem 0.5rem;
+            background: var(--light);
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-top: 0.25rem;
+        }
+
+        .controls {
+            position: sticky;
+            top: 100px;
+            background: white;
+            padding: 1rem;
+            border-bottom: 2px solid var(--border);
+            z-index: 99;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:active {
+            background: var(--primary-dark);
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:active {
+            background: var(--border);
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 1rem;
+        }
+
+        .category {
+            margin-bottom: 2rem;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .category-icon {
+            font-size: 1.5rem;
+        }
+
+        .category-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark);
+            flex: 1;
+        }
+
+        .category-count {
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+        }
+
+        .question-header {
+            padding: 1rem;
+            cursor: pointer;
+            -webkit-tap-highlight-color: rgba(99, 102, 241, 0.1);
+            user-select: none;
+        }
+
+        .question-header:active {
+            background: var(--light);
+        }
+
+        .question-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-number {
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .difficulty {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .difficulty-easy {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .difficulty-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .difficulty-hard {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .question-text {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+            line-height: 1.5;
+        }
+
+        .expand-icon {
+            float: right;
+            font-size: 1.25rem;
+            color: var(--gray);
+            transition: transform 0.3s;
+        }
+
+        .question-card.active .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .question-card.active .answer {
+            max-height: 10000px;
+        }
+
+        .answer-content {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            background: var(--light);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .answer-content h4 {
+            color: var(--primary);
+            font-size: 1rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .answer-content h4:first-child {
+            margin-top: 0;
+        }
+
+        .answer-content ul {
+            margin: 0.5rem 0 1rem 1.5rem;
+        }
+
+        .answer-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .answer-content p {
+            margin: 0.75rem 0;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--light);
+            color: var(--gray);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            margin: 0.25rem 0.25rem 0.25rem 0;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            display: block;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table thead {
+            background: var(--light);
+        }
+
+        table th,
+        table td {
+            padding: 0.75rem 0.5rem;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        table th {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .highlight {
+            background: #fef3c7;
+            padding: 0.125rem 0.25rem;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid var(--warning);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .info-box {
+            background: #dbeafe;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 2rem;
+        }
+
+        .footer p {
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            opacity: 0.9;
+        }
+
+        @media (min-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1.1rem;
+            }
+
+            .container {
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 2rem;
+            }
+
+            .stats {
+                gap: 1rem;
+                padding: 1.5rem;
+            }
+
+            .stat-item {
+                min-width: 100px;
+                padding: 1rem;
+            }
+
+            .stat-number {
+                font-size: 1.75rem;
+            }
+
+            .stat-label {
+                font-size: 0.85rem;
+            }
+
+            .controls {
+                top: 120px;
+                padding: 1.5rem;
+                gap: 1rem;
+            }
+
+            .btn {
+                flex: none;
+                padding: 0.875rem 2rem;
+            }
+
+            .category-header {
+                padding: 1.5rem;
+            }
+
+            .category-title {
+                font-size: 1.5rem;
+            }
+
+            .question-header {
+                padding: 1.5rem;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .answer-content {
+                padding: 1.5rem;
+                font-size: 1rem;
+            }
+
+            .code-block {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media print {
+            .header {
+                position: relative;
+            }
+            .controls {
+                display: none;
+            }
+            .question-card {
+                break-inside: avoid;
+            }
+            .answer {
+                max-height: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 Câu Hỏi Phỏng Vấn</h1>
+        <p>Senior Fullstack Developer - Concepts & Trade-offs</p>
+    </div>
+
+    <div class="stats">
+        <div class="stat-item">
+            <span class="stat-number">30</span>
+            <div class="stat-label">Câu hỏi</div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">8</span>
+            <div class="stat-label">Chủ đề</div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">7+</span>
+            <div class="stat-label">Năm KN</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-primary" onclick="toggleAll(true)">Mở tất cả</button>
+        <button class="btn btn-secondary" onclick="toggleAll(false)">Đóng tất cả</button>
+    </div>
+
+    <div class="container">
+        <!-- Microservices & Architecture -->
+        <div class="category">
+            <div class="category-header">
+                <span class="category-icon">🏗️</span>
+                <h2 class="category-title">Microservices & Architecture</h2>
+                <span class="category-count">5</span>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q1</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Sync vs Async communication - khi nào dùng gì? Trade-offs?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Synchronous (REST/gRPC):</h4>
+                        <p><strong>Khi nào:</strong> Query operations, cần response ngay, services trong cùng datacenter, low latency critical</p>
+                        <p><strong>Ưu điểm:</strong> Simple, immediate consistency, dễ debug</p>
+                        <p><strong>Nhược điểm:</strong> Tight coupling, cascading failures, latency tích lũy</p>
+
+                        <h4>Asynchronous (Kafka/Queue):</h4>
+                        <p><strong>Khi nào:</strong> Long-running tasks, fire-and-forget, event workflows, cần retry tự động</p>
+                        <p><strong>Ưu điểm:</strong> Loose coupling, resilient, high throughput</p>
+                        <p><strong>Nhược điểm:</strong> Eventual consistency, debugging phức tạp, message ordering, cần idempotency</p>
+
+                        <h4>Decision Framework:</h4>
+                        <ul>
+                            <li><strong>Authentication/Authorization:</strong> Sync - cần verify ngay</li>
+                            <li><strong>Payment processing:</strong> Async - long-running, cần retry</li>
+                            <li><strong>Get user profile:</strong> Sync - simple read</li>
+                            <li><strong>Send email:</strong> Async - fire-and-forget</li>
+                            <li><strong>Real-time inventory:</strong> Sync - cần data chính xác ngay</li>
+                        </ul>
+
+                        <div class="warning-box">
+                            <strong>⚠️ Sai lầm:</strong> Dùng async cho mọi thứ. Sync hoàn toàn OK cho simple queries trong cùng DC.
+                        </div>
+
+                        <span class="tag">Circuit Breaker</span>
+                        <span class="tag">Event-Driven</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q2</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Service Discovery - client-side vs server-side? Implement thế nào?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Client-Side Discovery (Consul/Eureka):</h4>
+                        <p><strong>Cách hoạt động:</strong> Service tự register, client query registry và load balance</p>
+                        <p><strong>Pros:</strong> No extra hop, flexible load balancing logic, better performance</p>
+                        <p><strong>Cons:</strong> Client phức tạp hơn, language-specific client lib, harder to manage</p>
+
+                        <h4>Server-Side Discovery (Kubernetes Service/Load Balancer):</h4>
+                        <p><strong>Cách hoạt động:</strong> Infrastructure handle discovery và load balancing</p>
+                        <p><strong>Pros:</strong> Simple client (chỉ gọi domain), platform agnostic, centralized management</p>
+                        <p><strong>Cons:</strong> Extra hop (slight latency), limited flexibility</p>
+
+                        <h4>Real-World Choice:</h4>
+                        <ul>
+                            <li><strong>Kubernetes:</strong> Dùng built-in Services (server-side) - simplest</li>
+                            <li><strong>VM/EC2:</strong> Consul + client lib hoặc load balancer</li>
+                            <li><strong>Best of both:</strong> Service mesh (Istio) - server-side nhưng advanced features</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>💡 Tại UrBox:</strong> Nếu đang dùng K8s thì Service + DNS đã đủ. Không cần phức tạp hóa với Consul trừ khi có yêu cầu đặc biệt.
+                        </div>
+
+                        <span class="tag">Service Mesh</span>
+                        <span class="tag">Consul</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q3</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Distributed Tracing - debug payment flow chậm qua 5 services thế nào?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Tại sao cần Distributed Tracing:</h4>
+                        <ul>
+                            <li>Request đi qua nhiều services → logs riêng lẻ không đủ</li>
+                            <li>Cần xem toàn bộ flow: latency từng service, bottleneck ở đâu</li>
+                            <li>Correlate errors across services</li>
+                        </ul>
+
+                        <h4>OpenTelemetry Approach:</h4>
+                        <p><strong>Trace Context:</strong> TraceID + SpanID được propagate qua headers (HTTP) hoặc message headers (Kafka)</p>
+                        <p><strong>Spans:</strong> Mỗi operation tạo span với start time, end time, attributes</p>
+                        <p><strong>Visualization:</strong> Jaeger/Zipkin hiển thị waterfall diagram</p>
+
+                        <h4>Debug Example - Payment chậm:</h4>
+                        <div class="code-block">Trace shows:
+API Gateway: 5ms
+├─ Auth: 50ms
+├─ Payment: 3500ms ← BOTTLENECK!
+│  ├─ Validate: 5ms
+│  ├─ Gateway Call: 3000ms ← Issue here
+│  └─ Save DB: 450ms ← Also slow
+└─ Notification: 20ms</div>
+
+                        <p><strong>Investigation:</strong></p>
+                        <ul>
+                            <li>Gateway call 3s → Check: Connection pool exhausted → Fix: Tăng pool + timeout</li>
+                            <li>DB save 450ms → Check: Missing index → Fix: CREATE INDEX</li>
+                            <li>Result: 3500ms → 150ms (23x faster)</li>
+                        </ul>
+
+                        <h4>Key Metrics:</h4>
+                        <ul>
+                            <li><strong>Latency:</strong> P50, P95, P99 per service</li>
+                            <li><strong>Error rate:</strong> % failed requests</li>
+                            <li><strong>Throughput:</strong> Requests/second</li>
+                            <li><strong>Dependencies:</strong> Service map</li>
+                        </ul>
+
+                        <span class="tag">OpenTelemetry</span>
+                        <span class="tag">Jaeger</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q4</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Graceful Shutdown - tránh data loss khi K8s terminate pod?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>The Problem:</h4>
+                        <p>K8s sends SIGTERM → 30s default grace period → SIGKILL. Nếu đang xử lý Kafka message 5 phút hoặc HTTP request 2 phút → bị kill → DATA LOSS!</p>
+
+                        <h4>Strategy:</h4>
+                        <p><strong>1. Stop accepting new requests:</strong></p>
+                        <ul>
+                            <li>Health check return 503 → K8s/LB stop routing traffic</li>
+                            <li>Wait 5-10s để LB update</li>
+                        </ul>
+
+                        <p><strong>2. Complete in-flight work:</strong></p>
+                        <ul>
+                            <li>Track số requests đang xử lý</li>
+                            <li>Kafka: pause consumer, wait for messages, commit offsets</li>
+                            <li>HTTP: wait for responses</li>
+                        </ul>
+
+                        <p><strong>3. Close connections:</strong></p>
+                        <ul>
+                            <li>Database connections</li>
+                            <li>Kafka producers/consumers</li>
+                            <li>Redis connections</li>
+                        </ul>
+
+                        <p><strong>4. Kubernetes Config:</strong></p>
+                        <div class="code-block">terminationGracePeriodSeconds: 60
+preStop:
+  exec:
+    command: ["sh", "-c", "sleep 5"]
+readinessProbe:
+  httpGet:
+    path: /health</div>
+
+                        <h4>Testing:</h4>
+                        <p>Gửi long request → SIGTERM while processing → Request phải complete, không 502</p>
+
+                        <div class="warning-box">
+                            <strong>⚠️ Common Issue:</strong> Quên pause Kafka consumer → vẫn nhận messages mới trong shutdown → incomplete processing
+                        </div>
+
+                        <span class="tag">Zero Downtime</span>
+                        <span class="tag">Kubernetes</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q5</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        API Gateway responsibilities - nên làm gì, không nên làm gì?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Nên làm:</h4>
+                        <ul>
+                            <li><strong>Routing:</strong> Map /api/users → user-service, /api/payments → payment-service</li>
+                            <li><strong>Authentication:</strong> JWT validation, API key check</li>
+                            <li><strong>Rate Limiting:</strong> Per user/IP throttling</li>
+                            <li><strong>Request/Response transformation:</strong> Legacy API → new format</li>
+                            <li><strong>Aggregation:</strong> Combine multiple service calls into one response</li>
+                            <li><strong>CORS, SSL termination</strong></li>
+                        </ul>
+
+                        <h4>Không nên làm:</h4>
+                        <ul>
+                            <li>❌ Business logic - thuộc về services</li>
+                            <li>❌ Database calls trực tiếp</li>
+                            <li>❌ Heavy computation</li>
+                            <li>❌ Session storage (stateless gateway tốt hơn)</li>
+                        </ul>
+
+                        <h4>Performance Patterns:</h4>
+                        <p><strong>Caching:</strong> Cache GET responses (Redis) - 5-15 phút TTL</p>
+                        <p><strong>Circuit Breaker:</strong> Nếu service down → fallback/cached value</p>
+                        <p><strong>Timeout:</strong> Set aggressive timeout (3-5s), don't wait forever</p>
+
+                        <h4>Tools:</h4>
+                        <ul>
+                            <li><strong>Kong:</strong> Feature-rich, plugin ecosystem</li>
+                            <li><strong>NGINX:</strong> Lightweight, high performance</li>
+                            <li><strong>AWS ALB/API Gateway:</strong> Managed, scalable</li>
+                        </ul>
+
+                        <span class="tag">Rate Limiting</span>
+                        <span class="tag">Circuit Breaker</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment & Transactions -->
+        <div class="category">
+            <div class="category-header">
+                <span class="category-icon">💳</span>
+                <h2 class="category-title">Payment & Distributed Transactions</h2>
+                <span class="category-count">4</span>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q6</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Idempotency trong payment - tại sao cần và implement concept thế nào?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Tại sao cần:</h4>
+                        <ul>
+                            <li>Network timeout → client retry → duplicate charge!</li>
+                            <li>User double-click "Pay" button</li>
+                            <li>Webhook được gửi lại nhiều lần</li>
+                        </ul>
+
+                        <h4>Strategy:</h4>
+                        <p><strong>1. Idempotency Key:</strong> Client/gateway generate unique key per operation</p>
+                        <p><strong>2. Check cache first:</strong> Redis với key = idempotencyKey, 24h TTL</p>
+                        <p><strong>3. Distributed lock:</strong> Prevent concurrent processing của cùng key</p>
+                        <p><strong>4. Database unique constraint:</strong> Last line of defense</p>
+                        <p><strong>5. Cache result:</strong> Return same response nếu retry</p>
+
+                        <h4>Levels of Protection:</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Level</th>
+                                    <th>Protection</th>
+                                    <th>Trade-off</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Application</td>
+                                    <td>Cache check</td>
+                                    <td>Fast, race condition possible</td>
+                                </tr>
+                                <tr>
+                                    <td>Distributed Lock</td>
+                                    <td>Redis lock</td>
+                                    <td>Slower, prevents races</td>
+                                </tr>
+                                <tr>
+                                    <td>Database</td>
+                                    <td>UNIQUE constraint</td>
+                                    <td>Absolute safety</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="warning-box">
+                            <strong>⚠️ Pitfall:</strong> Idempotency key không được reuse cho different operations. Key = hash(userId + timestamp + operation) là không đủ!
+                        </div>
+
+                        <span class="tag">Idempotency</span>
+                        <span class="tag">Distributed Lock</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q7</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        2PC vs Saga Pattern - khi nào dùng gì? Trade-offs?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Two-Phase Commit (2PC):</h4>
+                        <p><strong>How:</strong> Coordinator hỏi "ready?" → tất cả vote → commit hoặc abort all</p>
+                        <p><strong>Pros:</strong> ACID guarantees, strong consistency, automatic rollback</p>
+                        <p><strong>Cons:</strong> Blocking protocol (locks held), coordinator là single point of failure, slow</p>
+                        <p><strong>Khi nào:</strong> Financial ledger, MUST have atomicity (payment + inventory deduction)</p>
+
+                        <h4>Saga Pattern:</h4>
+                        <p><strong>How:</strong> Series of local transactions + compensating transactions nếu fail</p>
+                        <p><strong>Pros:</strong> Non-blocking, scalable, eventual consistency OK</p>
+                        <p><strong>Cons:</strong> Complex compensations, lack of isolation, có thể thấy intermediate states</p>
+                        <p><strong>Khi nào:</strong> Order fulfillment, booking systems, long-running workflows</p>
+
+                        <h4>Saga Types:</h4>
+                        <p><strong>Choreography:</strong> Services emit events → other services listen → decentralized</p>
+                        <ul>
+                            <li>Pros: Simple, loose coupling</li>
+                            <li>Cons: Hard to track flow, cyclic dependencies</li>
+                        </ul>
+
+                        <p><strong>Orchestration:</strong> Orchestrator điều khiển flow → centralized</p>
+                        <ul>
+                            <li>Pros: Clear flow, easier debugging, timeout handling</li>
+                            <li>Cons: Orchestrator có thể bottleneck, single point of failure</li>
+                        </ul>
+
+                        <h4>Real Decision:</h4>
+                        <ul>
+                            <li><strong>Payment processing:</strong> Avoid distributed transaction! Single service handle payment</li>
+                            <li><strong>Order fulfillment:</strong> Saga (payment → inventory → shipping)</li>
+                            <li><strong>Bank transfer:</strong> 2PC nếu control cả 2 accounts, Saga nếu external</li>
+                        </ul>
+
+                        <div class="warning-box">
+                            <strong>⚠️ Best Practice:</strong> Tránh distributed transactions bằng cách redesign service boundaries. Most cases không cần!
+                        </div>
+
+                        <span class="tag">2PC</span>
+                        <span class="tag">Saga</span>
+                        <span class="tag">Compensating Transactions</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q8</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        PCI DSS compliance - principles để handle card data an toàn?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Rule #1: DON'T Store Card Data!</h4>
+                        <p><strong>Tokenization Flow:</strong></p>
+                        <ul>
+                            <li>Frontend collect card data → send TRỰC TIẾP đến gateway (not your server!)</li>
+                            <li>Gateway return token (tok_abc123)</li>
+                            <li>Frontend gửi token đến backend</li>
+                            <li>Backend dùng token để charge → NEVER see actual card data</li>
+                        </ul>
+
+                        <h4>What Can Store:</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Can Store?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Full card number</td>
+                                    <td>❌ NO</td>
+                                </tr>
+                                <tr>
+                                    <td>CVV/CVC</td>
+                                    <td>❌ NEVER</td>
+                                </tr>
+                                <tr>
+                                    <td>Last 4 digits</td>
+                                    <td>✅ Yes</td>
+                                </tr>
+                                <tr>
+                                    <td>Expiry date</td>
+                                    <td>✅ Yes</td>
+                                </tr>
+                                <tr>
+                                    <td>Gateway token</td>
+                                    <td>✅ Yes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Security Requirements:</h4>
+                        <ul>
+                            <li><strong>Network:</strong> TLS 1.2+, strong ciphers</li>
+                            <li><strong>Access:</strong> Least privilege, MFA for admin</li>
+                            <li><strong>Data:</strong> Encryption at rest, secure backups</li>
+                            <li><strong>Logging:</strong> NEVER log card data - sanitize before log</li>
+                            <li><strong>Audit:</strong> All payment operations logged</li>
+                        </ul>
+
+                        <div class="warning-box">
+                            <strong>⚠️ Logging Danger:</strong> Check logs không chứa sensitive data. Một dòng log có card number = PCI violation!
+                        </div>
+
+                        <span class="tag">PCI DSS</span>
+                        <span class="tag">Tokenization</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q9</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Payment reconciliation - đối chiếu với gateway như thế nào?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Tại sao cần:</h4>
+                        <ul>
+                            <li>Webhook có thể miss → payment successful nhưng DB không update</li>
+                            <li>Network issue → gateway charge nhưng ta không biết</li>
+                            <li>Data integrity - đảm bảo money match</li>
+                        </ul>
+
+                        <h4>Daily Reconciliation Process:</h4>
+                        <p><strong>1. Fetch data (2 AM daily):</strong></p>
+                        <ul>
+                            <li>Our payments (yesterday): từ DB</li>
+                            <li>Gateway transactions: từ API</li>
+                        </ul>
+
+                        <p><strong>2. Compare:</strong></p>
+                        <ul>
+                            <li>Match by gateway reference ID</li>
+                            <li>Check amount, status, timestamp</li>
+                        </ul>
+
+                        <p><strong>3. Discrepancy Types:</strong></p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Issue</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Missing in gateway</td>
+                                    <td>Query status API, webhook missed?</td>
+                                </tr>
+                                <tr>
+                                    <td>Extra in gateway</td>
+                                    <td>Create missing record, investigate</td>
+                                </tr>
+                                <tr>
+                                    <td>Amount mismatch</td>
+                                    <td>Manual review, alert finance team</td>
+                                </tr>
+                                <tr>
+                                    <td>Status mismatch</td>
+                                    <td>Update status, check reason</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p><strong>4. Generate report:</strong> Email to finance team with summary + discrepancies</p>
+
+                        <h4>Real-time Validation:</h4>
+                        <p>Khi query payment status → so sánh với gateway luôn → auto-fix simple mismatches</p>
+
+                        <span class="tag">Reconciliation</span>
+                        <span class="tag">Data Integrity</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Database & Performance -->
+        <div class="category">
+            <div class="category-header">
+                <span class="category-icon">🗄️</span>
+                <h2 class="category-title">Database & Performance</h2>
+                <span class="category-count">5</span>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q10</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        N+1 Query Problem - nhận biết và giải quyết thế nào?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>The Problem:</h4>
+                        <p>1 query để lấy users + N queries để lấy orders của từng user = 1 + N queries (N có thể là 1000+)</p>
+
+                        <h4>Solutions:</h4>
+                        <p><strong>1. Eager Loading (JOIN):</strong></p>
+                        <ul>
+                            <li>Single query với LEFT JOIN</li>
+                            <li>TypeORM: relations: ['orders'] hoặc leftJoinAndSelect</li>
+                            <li>Cons: Có thể fetch quá nhiều data không cần</li>
+                        </ul>
+
+                        <p><strong>2. Batch Loading:</strong></p>
+                        <ul>
+                            <li>Query users → extract userIds → IN (userIds) để lấy orders</li>
+                            <li>2 queries thay vì N+1</li>
+                            <li>GraphQL: DataLoader pattern</li>
+                        </ul>
+
+                        <p><strong>3. Pagination + Limit:</strong></p>
+                        <ul>
+                            <li>Không load all users một lúc</li>
+                            <li>Take 20 users at a time</li>
+                        </ul>
+
+                        <h4>Detection:</h4>
+                        <ul>
+                            <li>Enable query logging (maxQueryExecutionTime)</li>
+                            <li>Count queries per request (nếu >10 là warning)</li>
+                            <li>APM tools (New Relic, DataDog) highlight N+1</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>💡 Rule of thumb:</strong> Nếu loop qua array và query trong loop = N+1 problem
+                        </div>
+
+                        <span class="tag">Query Optimization</span>
+                        <span class="tag">TypeORM</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q11</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Database Indexing - khi nào cần composite index? Strategy?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Khi nào cần Composite Index:</h4>
+                        <ul>
+                            <li><strong>Multi-column WHERE:</strong> WHERE userId = ? AND createdAt > ?</li>
+                            <li><strong>ORDER BY multiple columns:</strong> ORDER BY userId, createdAt DESC</li>
+                            <li><strong>Covering Index:</strong> Index chứa tất cả columns trong SELECT</li>
+                        </ul>
+
+                        <h4>Column Order quan trọng:</h4>
+                        <p>Index (userId, createdAt) ≠ Index (createdAt, userId)</p>
+                        <p><strong>Rule:</strong> Column có selectivity cao nhất first (ít duplicates)</p>
+
+                        <h4>Index Strategy:</h4>
+                        <ul>
+                            <li><strong>Single column:</strong> Foreign keys, status, email (frequently queried)</li>
+                            <li><strong>Composite:</strong> Frequent WHERE clauses với 2+ columns</li>
+                            <li><strong>Partial:</strong> WHERE status = 'pending' (chỉ index subset)</li>
+                        </ul>
+
+                        <h4>Don't Over-Index:</h4>
+                        <ul>
+                            <li>Mỗi index làm chậm INSERT/UPDATE/DELETE</li>
+                            <li>Index tốn disk space</li>
+                            <li>Monitor unused indexes: pg_stat_user_indexes</li>
+                        </ul>
+
+                        <h4>Example:</h4>
+                        <div class="code-block">-- Good: High selectivity first
+CREATE INDEX idx_user_date ON payments(user_id, created_at);
+
+-- Supports:
+WHERE user_id = 123 AND created_at > '2024-01-01'
+WHERE user_id = 123  (partial match OK)
+
+-- Does NOT support:
+WHERE created_at > '2024-01-01'  (need separate index)</div>
+
+                        <span class="tag">Database Indexing</span>
+                        <span class="tag">PostgreSQL</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q12</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Sharding vs Replication - khi nào dùng gì? Trade-offs?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Replication (Primary-Replica):</h4>
+                        <p><strong>How:</strong> Copy toàn bộ data sang multiple servers</p>
+                        <p><strong>Use case:</strong> Read-heavy workload, high availability</p>
+                        <p><strong>Pros:</strong> Simple, automatic failover, scale reads</p>
+                        <p><strong>Cons:</strong> Không scale writes, mỗi server phải chứa full dataset</p>
+
+                        <h4>Sharding (Horizontal Partitioning):</h4>
+                        <p><strong>How:</strong> Split data across multiple databases (shard by userId, region, etc)</p>
+                        <p><strong>Use case:</strong> Data quá lớn cho 1 server, write-heavy</p>
+                        <p><strong>Pros:</strong> Scale both reads & writes, mỗi shard nhỏ hơn</p>
+                        <p><strong>Cons:</strong> Complex queries (cross-shard JOIN), rebalancing khó</p>
+
+                        <h4>Sharding Strategy:</h4>
+                        <p><strong>Hash-based:</strong> hash(userId) % shardCount → even distribution</p>
+                        <p><strong>Range-based:</strong> userId 1-1M → shard1, 1M-2M → shard2 → easy rebalance nhưng uneven</p>
+                        <p><strong>Geo-based:</strong> VN users → Asia shard, US users → US shard → lower latency</p>
+
+                        <h4>Real Decision:</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Scale Need</th>
+                                    <th>Solution</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Read scaling</td>
+                                    <td>Replication (read replicas)</td>
+                                </tr>
+                                <tr>
+                                    <td>Write scaling</td>
+                                    <td>Sharding</td>
+                                </tr>
+                                <tr>
+                                    <td>High availability</td>
+                                    <td>Replication</td>
+                                </tr>
+                                <tr>
+                                    <td>Data > 1 server capacity</td>
+                                    <td>Sharding</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="warning-box">
+                            <strong>⚠️ Avoid premature sharding:</strong> Start with replication. Only shard when single DB cannot handle (usually at millions of rows, high writes).
+                        </div>
+
+                        <span class="tag">Sharding</span>
+                        <span class="tag">Replication</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q13</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Connection Pool sizing - làm sao tính đúng?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Formula:</h4>
+                        <p><strong>connections = ((cores × 2) + effective_spindle_count)</strong></p>
+                        <p>4-core CPU + 1 disk = (4 × 2) + 1 = 9 → round to 10</p>
+
+                        <h4>Why không phải càng nhiều càng tốt:</h4>
+                        <ul>
+                            <li>Mỗi connection = memory overhead (~10MB)</li>
+                            <li>Context switching nếu quá nhiều</li>
+                            <li>Database có max_connections limit</li>
+                        </ul>
+
+                        <h4>Multiple Instances:</h4>
+                        <p>5 app instances × 10 connections = 50 total → check DB max_connections (default PostgreSQL = 100)</p>
+
+                        <h4>Settings:</h4>
+                        <ul>
+                            <li><strong>min:</strong> 5 (always ready)</li>
+                            <li><strong>max:</strong> 10-20 per instance</li>
+                            <li><strong>idleTimeout:</strong> 30s (close idle)</li>
+                            <li><strong>connectionTimeout:</strong> 2s (fail fast)</li>
+                        </ul>
+
+                        <h4>Monitoring:</h4>
+                        <div class="code-block">-- Check active connections
+SELECT count(*) FROM pg_stat_activity;
+
+-- Check connection pool exhaustion
+-- If waiting > 100ms = need more connections</div>
+
+                        <h4>Alternative: PgBouncer</h4>
+                        <p>Connection pooler between app and DB → hundreds of app connections → reuse few DB connections</p>
+
+                        <span class="tag">Connection Pool</span>
+                        <span class="tag">PgBouncer</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q14</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        PostgreSQL vs MongoDB - khi nào dùng gì?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>PostgreSQL (Relational):</h4>
+                        <p><strong>Khi nào:</strong></p>
+                        <ul>
+                            <li>Structured data với relationships (users → orders → payments)</li>
+                            <li>ACID transactions critical (financial data)</li>
+                            <li>Complex queries, JOINs, aggregations</li>
+                            <li>Strong consistency required</li>
+                        </ul>
+                        <p><strong>Examples:</strong> Payments, user accounts, inventory, audit logs</p>
+
+                        <h4>MongoDB (Document):</h4>
+                        <p><strong>Khi nào:</strong></p>
+                        <ul>
+                            <li>Flexible schema (product catalog với nhiều variants)</li>
+                            <li>High write throughput (logs, events, analytics)</li>
+                            <li>Denormalized data OK (duplicate để fast reads)</li>
+                            <li>Horizontal scaling cần thiết</li>
+                        </ul>
+                        <p><strong>Examples:</strong> Logs, sessions, product catalog, CMS content</p>
+
+                        <h4>Hybrid Approach:</h4>
+                        <p>Dùng cả hai! PostgreSQL cho transactional data, MongoDB cho analytics/logs</p>
+
+                        <h4>Decision Criteria:</h4>
+                        <ul>
+                            <li><strong>Data structure:</strong> Fixed schema → Postgres | Flexible → Mongo</li>
+                            <li><strong>Consistency:</strong> ACID → Postgres | Eventual OK → Mongo</li>
+                            <li><strong>Queries:</strong> Complex JOINs → Postgres | Simple lookups → Mongo</li>
+                            <li><strong>Scale:</strong> Vertical → Postgres | Horizontal → Mongo</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>💡 Tại UrBox:</strong> Payments/Users/Loyalty = PostgreSQL. Logs/Sessions/Product variants = MongoDB.
+                        </div>
+
+                        <span class="tag">PostgreSQL</span>
+                        <span class="tag">MongoDB</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kafka & Messaging -->
+        <div class="category">
+            <div class="category-header">
+                <span class="category-icon">📨</span>
+                <h2 class="category-title">Kafka & Message Queue</h2>
+                <span class="category-count">4</span>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q15</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Kafka Consumer Group - rebalancing issues và cách fix?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Consumer Group Concept:</h4>
+                        <p>Multiple consumers cùng group → mỗi partition chỉ assigned cho 1 consumer → parallel processing</p>
+
+                        <h4>Rebalancing Hell Problem:</h4>
+                        <p><strong>Symptom:</strong> Consumer liên tục rebalance → không process được messages</p>
+                        <p><strong>Cause:</strong> Processing time > session.timeout → broker thinks consumer dead → rebalance</p>
+                        <p><strong>Fix:</strong></p>
+                        <ul>
+                            <li>Tăng session.timeout (default 10s → 5 phút)</li>
+                            <li>Tăng max.poll.interval (default 5 phút → 10 phút)</li>
+                            <li>Giảm processing time (batch nhỏ hơn, optimize logic)</li>
+                        </ul>
+
+                        <h4>Duplicate Processing:</h4>
+                        <p><strong>Cause:</strong> Consumer process message nhưng chưa commit offset → crash → reprocess</p>
+                        <p><strong>Solution:</strong> Idempotent consumer (check messageId before process)</p>
+
+                        <h4>Consumer Lag:</h4>
+                        <p><strong>Monitor:</strong> Offset lag = latest offset - consumer offset</p>
+                        <p><strong>Fix lag:</strong></p>
+                        <ul>
+                            <li>Add more consumers (max = số partitions)</li>
+                            <li>Optimize processing time</li>
+                            <li>Increase partition count (nếu cần scale hơn nữa)</li>
+                        </ul>
+
+                        <h4>Best Practices:</h4>
+                        <ul>
+                            <li>Consumers ≤ partitions (thừa consumer = idle)</li>
+                            <li>Enable auto-commit = false → manual commit sau khi process xong</li>
+                            <li>Handle exceptions gracefully (DLQ cho poison messages)</li>
+                        </ul>
+
+                        <span class="tag">Consumer Groups</span>
+                        <span class="tag">Rebalancing</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q16</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Partition Strategy - đảm bảo message ordering?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Ordering Guarantee:</h4>
+                        <p><strong>✅ Per partition:</strong> Messages trong cùng partition ordered</p>
+                        <p><strong>❌ Cross partition:</strong> Không có ordering guarantee</p>
+
+                        <h4>Partition Key Strategy:</h4>
+                        <p><strong>Use case:</strong> Cần order per userId → partition key = userId</p>
+                        <p>Same userId → same partition → ordered messages</p>
+
+                        <h4>Partition Count Decision:</h4>
+                        <p><strong>Formula:</strong> max(expected_consumers, throughput_target / consumer_throughput)</p>
+                        <p><strong>Example:</strong></p>
+                        <ul>
+                            <li>Target: 10,000 msg/sec</li>
+                            <li>Consumer speed: 1,000 msg/sec</li>
+                            <li>Partitions needed: 10</li>
+                        </ul>
+
+                        <h4>Trade-offs:</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Partitions</th>
+                                    <th>Pros</th>
+                                    <th>Cons</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Too few (1-5)</td>
+                                    <td>Simple, strong ordering</td>
+                                    <td>Limited parallelism, bottleneck</td>
+                                </tr>
+                                <tr>
+                                    <td>Right amount</td>
+                                    <td>Good parallelism, manageable</td>
+                                    <td>Need to calculate properly</td>
+                                </tr>
+                                <tr>
+                                    <td>Too many (100+)</td>
+                                    <td>Max parallelism</td>
+                                    <td>Rebalancing slow, overhead</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="info-box">
+                            <strong>💡 Tip:</strong> Start with 10-20 partitions. Monitor lag. Scale nếu cần.
+                        </div>
+
+                        <span class="tag">Partitioning</span>
+                        <span class="tag">Message Ordering</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q17</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Exactly-Once Semantics - có thật sự đạt được không?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>3 Levels of Guarantees:</h4>
+                        <p><strong>At-most-once:</strong> Message có thể mất (không retry)</p>
+                        <p><strong>At-least-once:</strong> Message không mất nhưng có thể duplicate (default)</p>
+                        <p><strong>Exactly-once:</strong> Message process đúng 1 lần (hard!)</p>
+
+                        <h4>Kafka Exactly-Once:</h4>
+                        <p><strong>Producer side:</strong> enable.idempotence = true</p>
+                        <p><strong>Consumer side:</strong> Idempotent processing + transactional offset commits</p>
+                        <p><strong>Reality:</strong> Kafka có exactly-once nhưng trong Kafka ecosystem only (producer → broker → consumer)</p>
+
+                        <h4>Real Exactly-Once = Idempotent Consumer:</h4>
+                        <p>Không thể đảm bảo exactly-once end-to-end (Kafka → DB → external API)</p>
+                        <p><strong>Solution:</strong> Make consumer idempotent:</p>
+                        <ul>
+                            <li>Check messageId trước khi process</li>
+                            <li>DB unique constraints</li>
+                            <li>Distributed locks</li>
+                        </ul>
+
+                        <h4>Example:</h4>
+                        <p><strong>Scenario:</strong> Payment message processed 2 lần</p>
+                        <p><strong>Protection:</strong></p>
+                        <ul>
+                            <li>messageId = unique key trong DB</li>
+                            <li>Check Redis cache trước</li>
+                            <li>Idempotency key gửi gateway</li>
+                        </ul>
+
+                        <div class="warning-box">
+                            <strong>⚠️ Truth:</strong> True exactly-once trong distributed system là impossible (network failures, partial failures). Focus on idempotent operations instead!
+                        </div>
+
+                        <span class="tag">Exactly-Once</span>
+                        <span class="tag">Idempotency</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q18</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Dead Letter Queue pattern - khi nào cần?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Khi nào cần DLQ:</h4>
+                        <ul>
+                            <li>Message processing fail sau max retries</li>
+                            <li>Poison messages (malformed data)</li>
+                            <li>Business validation failures</li>
+                            <li>Không muốn block queue vì bad messages</li>
+                        </ul>
+
+                        <h4>Pattern:</h4>
+                        <p><strong>1. Process message</strong></p>
+                        <p><strong>2. If fail:</strong> Retry với backoff (3 lần)</p>
+                        <p><strong>3. Still fail:</strong> Send to DLQ topic</p>
+                        <p><strong>4. Alert team</strong></p>
+                        <p><strong>5. Manual review & retry</strong></p>
+
+                        <h4>DLQ Message Format:</h4>
+                        <div class="code-block">{
+  originalMessage: {...},
+  error: {
+    message: "...",
+    stack: "..."
+  },
+  metadata: {
+    topic: "payment.process",
+    partition: 5,
+    offset: 12345,
+    retryCount: 3
+  },
+  timestamp: "2024-01-15T10:30:00Z"
+}</div>
+
+                        <h4>DLQ Operations:</h4>
+                        <ul>
+                            <li><strong>Monitor:</strong> Alert nếu DLQ > threshold</li>
+                            <li><strong>Review:</strong> Admin dashboard để xem DLQ messages</li>
+                            <li><strong>Retry:</strong> Fix issue → replay message từ DLQ</li>
+                            <li><strong>Discard:</strong> Nếu message truly invalid</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>💡 Best Practice:</strong> Có separate DLQ per topic (payment.dlq, notification.dlq) để dễ manage
+                        </div>
+
+                        <span class="tag">DLQ</span>
+                        <span class="tag">Error Handling</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Design -->
+        <div class="category">
+            <div class="category-header">
+                <span class="category-icon">🎯</span>
+                <h2 class="category-title">System Design</h2>
+                <span class="category-count">3</span>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q19</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Scale đến 10,000 TPS - approach như thế nào?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Requirements Breakdown:</h4>
+                        <ul>
+                            <li><strong>Throughput:</strong> 10,000 TPS = 600,000 requests/phút</li>
+                            <li><strong>Latency:</strong> P99 < 500ms</li>
+                            <li><strong>Availability:</strong> 99.99% (52 phút downtime/năm)</li>
+                        </ul>
+
+                        <h4>Horizontal Scaling:</h4>
+                        <p><strong>Application Layer:</strong></p>
+                        <ul>
+                            <li>Mỗi pod handle ~300-500 RPS</li>
+                            <li>10,000 / 350 = ~30 pods minimum</li>
+                            <li>Add 20% buffer = 35-40 pods</li>
+                            <li>Auto-scaling based on CPU (70%) & RPS metrics</li>
+                        </ul>
+
+                        <h4>Database Layer:</h4>
+                        <ul>
+                            <li><strong>Reads:</strong> Primary + 3-5 read replicas</li>
+                            <li><strong>Writes:</strong> Shard nếu single primary không handle (thường ổn đến 5K TPS)</li>
+                            <li><strong>Connection pool:</strong> PgBouncer để reuse connections</li>
+                        </ul>
+
+                        <h4>Caching Strategy:</h4>
+                        <ul>
+                            <li><strong>Redis Cluster:</strong> User sessions, frequent queries</li>
+                            <li><strong>Cache hit ratio:</strong> Target 80%+ → giảm DB load significantly</li>
+                            <li><strong>TTL:</strong> 5-15 phút cho dynamic data</li>
+                        </ul>
+
+                        <h4>Async Processing:</h4>
+                        <ul>
+                            <li><strong>Kafka:</strong> Offload long tasks (20+ partitions)</li>
+                            <li><strong>Workers:</strong> Separate từ API pods</li>
+                            <li><strong>Priority queues:</strong> Critical vs normal tasks</li>
+                        </ul>
+
+                        <h4>Monitoring:</h4>
+                        <ul>
+                            <li>Metrics: Latency (P50/P95/P99), error rate, saturation</li>
+                            <li>Alerts: P99 > 500ms, error rate > 1%, CPU > 80%</li>
+                            <li>Distributed tracing: Identify bottlenecks</li>
+                        </ul>
+
+                        <span class="tag">Horizontal Scaling</span>
+                        <span class="tag">High Availability</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q20</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        CAP Theorem - real examples và trade-offs?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>CAP Basics:</h4>
+                        <ul>
+                            <li><strong>C (Consistency):</strong> Mọi read thấy latest write</li>
+                            <li><strong>A (Availability):</strong> Mọi request nhận response</li>
+                            <li><strong>P (Partition Tolerance):</strong> Hoạt động khi network bị chia cắt</li>
+                        </ul>
+                        <p><strong>Reality:</strong> Chỉ chọn được 2/3. Trong distributed system, P là bắt buộc → chọn CP hoặc AP</p>
+
+                        <h4>CP Systems (Consistency + Partition Tolerance):</h4>
+                        <p><strong>Behavior:</strong> Reject writes khi partition để maintain consistency</p>
+                        <p><strong>Examples:</strong> MongoDB (default), HBase, etcd, ZooKeeper</p>
+                        <p><strong>Use when:</strong> Financial transactions, inventory management (không thể oversell)</p>
+
+                        <h4>AP Systems (Availability + Partition Tolerance):</h4>
+                        <p><strong>Behavior:</strong> Accept writes trên cả 2 sides của partition → resolve conflicts sau</p>
+                        <p><strong>Examples:</strong> Cassandra, DynamoDB, Riak</p>
+                        <p><strong>Use when:</strong> Social features, analytics, logs (eventual consistency OK)</p>
+
+                        <h4>Real Scenarios:</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Use Case</th>
+                                    <th>Choice</th>
+                                    <th>Why</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Payment processing</td>
+                                    <td>CP</td>
+                                    <td>Cannot charge twice!</td>
+                                </tr>
+                                <tr>
+                                    <td>Loyalty points</td>
+                                    <td>AP</td>
+                                    <td>Temporary inconsistency OK</td>
+                                </tr>
+                                <tr>
+                                    <td>Inventory</td>
+                                    <td>CP</td>
+                                    <td>Prevent overselling</td>
+                                </tr>
+                                <tr>
+                                    <td>User preferences</td>
+                                    <td>AP</td>
+                                    <td>Availability > exact sync</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="warning-box">
+                            <strong>⚠️ Reality:</strong> CAP là simplified model. Real systems có gradations (tunable consistency levels).
+                        </div>
+
+                        <span class="tag">CAP Theorem</span>
+                        <span class="tag">Distributed Systems</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q21</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Caching strategies - when và how?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Cache Patterns:</h4>
+                        
+                        <p><strong>1. Cache-Aside (Lazy Loading):</strong></p>
+                        <ul>
+                            <li>Check cache → hit: return | miss: query DB → cache it → return</li>
+                            <li>Pros: Only cache what's needed</li>
+                            <li>Cons: Cache miss penalty, stale data</li>
+                        </ul>
+
+                        <p><strong>2. Write-Through:</strong></p>
+                        <ul>
+                            <li>Write DB + cache simultaneously</li>
+                            <li>Pros: Cache always fresh</li>
+                            <li>Cons: Write latency higher, unnecessary caching</li>
+                        </ul>
+
+                        <p><strong>3. Write-Behind:</strong></p>
+                        <ul>
+                            <li>Write cache → async flush to DB</li>
+                            <li>Pros: Fast writes</li>
+                            <li>Cons: Data loss risk if cache crashes</li>
+                        </ul>
+
+                        <h4>What to Cache:</h4>
+                        <ul>
+                            <li><strong>User sessions:</strong> Redis, TTL = session length</li>
+                            <li><strong>API responses:</strong> Frequent queries, TTL = 5-15 min</li>
+                            <li><strong>Database queries:</strong> Expensive joins, TTL = 5-60 min</li>
+                            <li><strong>Static content:</strong> CDN, long TTL</li>
+                        </ul>
+
+                        <h4>Cache Invalidation:</h4>
+                        <p><strong>Hardest problem in CS!</strong></p>
+                        <ul>
+                            <li><strong>TTL-based:</strong> Simple, có thể serve stale data</li>
+                            <li><strong>Event-based:</strong> Invalidate khi data change (complex)</li>
+                            <li><strong>Version-based:</strong> Key includes version (cache:user:123:v5)</li>
+                        </ul>
+
+                        <h4>Anti-patterns:</h4>
+                        <ul>
+                            <li>❌ Cache everything → memory waste</li>
+                            <li>❌ No TTL → stale forever</li>
+                            <li>❌ Cache frequently changing data</li>
+                            <li>❌ No cache size limit → OOM</li>
+                        </ul>
+
+                        <span class="tag">Redis</span>
+                        <span class="tag">Caching</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DevOps -->
+        <div class="category">
+            <div class="category-header">
+                <span class="category-icon">🚀</span>
+                <h2 class="category-title">DevOps & Deployment</h2>
+                <span class="category-count">3</span>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q22</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        GitHub Actions optimization - 3+ phút xuống <1 phút?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Optimization Strategies:</h4>
+                        
+                        <p><strong>1. Parallel Jobs:</strong></p>
+                        <p>Lint, test, build chạy parallel thay vì sequential → save 50%+ time</p>
+
+                        <p><strong>2. Dependency Caching:</strong></p>
+                        <ul>
+                            <li>Cache node_modules (key: package-lock.json hash)</li>
+                            <li>Save 30-40s mỗi run</li>
+                            <li>Hit rate >90% nếu dependencies ít thay đổi</li>
+                        </ul>
+
+                        <p><strong>3. Docker Layer Caching:</strong></p>
+                        <ul>
+                            <li>BuildKit cache (cache-from/cache-to type=gha)</li>
+                            <li>Optimize Dockerfile layer order (dependencies trước source)</li>
+                            <li>Save 1-2 phút build time</li>
+                        </ul>
+
+                        <p><strong>4. Selective Testing:</strong></p>
+                        <ul>
+                            <li>Only run tests for changed files</li>
+                            <li>Skip E2E nếu chỉ update README</li>
+                        </ul>
+
+                        <p><strong>5. Matrix Strategy:</strong></p>
+                        <p>Build multiple services simultaneously trong monorepo</p>
+
+                        <h4>Results:</h4>
+                        <ul>
+                            <li>npm install: 2 min → 20s (caching)</li>
+                            <li>Tests: 1 min → 15s (parallel + selective)</li>
+                            <li>Docker build: 1.5 min → 30s (layer caching)</li>
+                            <li><strong>Total: 3+ min → ~50s</strong></li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>💡 Measure first:</strong> Enable timing logs để biết bottleneck ở đâu trước khi optimize
+                        </div>
+
+                        <span class="tag">CI/CD</span>
+                        <span class="tag">GitHub Actions</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q23</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        K8s deployment strategies - Blue-Green vs Rolling vs Canary?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Rolling Update (Default):</h4>
+                        <p><strong>How:</strong> Gradually replace old pods with new (maxSurge=1, maxUnavailable=1)</p>
+                        <p><strong>Pros:</strong> Zero downtime, simple, auto rollback</p>
+                        <p><strong>Cons:</strong> Cả 2 versions chạy đồng thời, rollback chậm</p>
+                        <p><strong>Use:</strong> Most deployments</p>
+
+                        <h4>Blue-Green:</h4>
+                        <p><strong>How:</strong> Deploy full new version (green) → test → switch traffic → kill old (blue)</p>
+                        <p><strong>Pros:</strong> Instant rollback (switch back), full testing trước khi switch</p>
+                        <p><strong>Cons:</strong> 2x resources, toàn bộ traffic chuyển một lúc</p>
+                        <p><strong>Use:</strong> Critical updates, database migrations</p>
+
+                        <h4>Canary:</h4>
+                        <p><strong>How:</strong> 10% traffic → new version → monitor → 50% → 100%</p>
+                        <p><strong>Pros:</strong> Test với real traffic nhỏ, phát hiện issues sớm, gradual rollout</p>
+                        <p><strong>Cons:</strong> Complex setup (Istio/Flagger), longer deploy time</p>
+                        <p><strong>Use:</strong> High-risk changes, user-facing features</p>
+
+                        <h4>Comparison:</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Strategy</th>
+                                    <th>Downtime</th>
+                                    <th>Resources</th>
+                                    <th>Rollback Speed</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Rolling</td>
+                                    <td>Zero</td>
+                                    <td>+1 pod</td>
+                                    <td>Minutes</td>
+                                </tr>
+                                <tr>
+                                    <td>Blue-Green</td>
+                                    <td>Zero</td>
+                                    <td>2x</td>
+                                    <td>Instant</td>
+                                </tr>
+                                <tr>
+                                    <td>Canary</td>
+                                    <td>Zero</td>
+                                    <td>~1.2x</td>
+                                    <td>Fast</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <span class="tag">Kubernetes</span>
+                        <span class="tag">Deployment</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q24</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Zero-downtime deployment - đảm bảo như thế nào?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Key Requirements:</h4>
+                        
+                        <p><strong>1. Health Checks:</strong></p>
+                        <ul>
+                            <li>Readiness probe: K8s chỉ route khi pod ready</li>
+                            <li>Liveness probe: Kill pod nếu unhealthy</li>
+                            <li>Startup probe: Give time to start (DB connections, cache warming)</li>
+                        </ul>
+
+                        <p><strong>2. Graceful Shutdown:</strong></p>
+                        <ul>
+                            <li>Stop health check → wait 5-10s → stop accepting requests → finish in-flight → shutdown</li>
+                            <li>terminationGracePeriodSeconds: 60s minimum</li>
+                        </ul>
+
+                        <p><strong>3. Rolling Update Settings:</strong></p>
+                        <ul>
+                            <li>maxSurge: 1 (có thể tăng nếu resources cho phép)</li>
+                            <li>maxUnavailable: 0 (never below desired replicas)</li>
+                        </ul>
+
+                        <p><strong>4. Database Migrations:</strong></p>
+                        <ul>
+                            <li>Backward compatible migrations (add column với default)</li>
+                            <li>Run migration trước deploy (separate job)</li>
+                            <li>Two-phase deploy nếu breaking change</li>
+                        </ul>
+
+                        <h4>Testing:</h4>
+                        <ul>
+                            <li>Load test during deploy → no 502s, no dropped requests</li>
+                            <li>Monitor error rate spike</li>
+                            <li>Chaos engineering (kill random pods)</li>
+                        </ul>
+
+                        <div class="warning-box">
+                            <strong>⚠️ Common Issue:</strong> Không wait cho load balancer update → new pod nhận traffic trước khi ready
+                        </div>
+
+                        <span class="tag">Zero Downtime</span>
+                        <span class="tag">Health Checks</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Debugging & Monitoring -->
+        <div class="category">
+            <div class="category-header">
+                <span class="category-icon">🔍</span>
+                <h2 class="category-title">Debugging & Monitoring</h2>
+                <span class="category-count">3</span>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q25</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        API chậm đột ngột - debug approach như thế nào?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Systematic Approach:</h4>
+                        
+                        <p><strong>1. Define "chậm":</strong></p>
+                        <ul>
+                            <li>Normal: P99 = 200ms → Now: P99 = 3000ms</li>
+                            <li>When started: Từ 10 AM hôm nay</li>
+                            <li>Affected endpoints: All hoặc specific?</li>
+                        </ul>
+
+                        <p><strong>2. Check Recent Changes:</strong></p>
+                        <ul>
+                            <li>Deploy mới? (git log, CI/CD history)</li>
+                            <li>Config change? (feature flags, environment variables)</li>
+                            <li>Traffic spike? (monitoring dashboard)</li>
+                        </ul>
+
+                        <p><strong>3. Layer-by-Layer:</strong></p>
+                        <p><strong>Application:</strong></p>
+                        <ul>
+                            <li>Check logs: Exceptions? Warnings?</li>
+                            <li>APM traces: Which function slow?</li>
+                            <li>CPU/Memory: Maxed out?</li>
+                        </ul>
+
+                        <p><strong>Database:</strong></p>
+                        <ul>
+                            <li>Slow query log: Missing indexes?</li>
+                            <li>Connection pool: Exhausted?</li>
+                            <li>Lock contention: pg_stat_activity</li>
+                        </ul>
+
+                        <p><strong>External Services:</strong></p>
+                        <ul>
+                            <li>Gateway timeout? Check circuit breaker</li>
+                            <li>Rate limited? Check API quotas</li>
+                        </ul>
+
+                        <p><strong>Infrastructure:</strong></p>
+                        <ul>
+                            <li>Network latency spike?</li>
+                            <li>Disk I/O bottleneck?</li>
+                        </ul>
+
+                        <h4>Common Culprits:</h4>
+                        <ul>
+                            <li>Missing database index (query plan changed)</li>
+                            <li>Connection pool exhausted</li>
+                            <li>Memory leak → GC thrashing</li>
+                            <li>External service degradation</li>
+                            <li>N+1 query introduced</li>
+                        </ul>
+
+                        <span class="tag">Debugging</span>
+                        <span class="tag">Performance</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q26</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Distributed system debugging - trace request qua nhiều services?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Challenges:</h4>
+                        <ul>
+                            <li>Request touch 5-10 services</li>
+                            <li>Logs scattered across services</li>
+                            <li>No single source of truth</li>
+                            <li>Async processing (Kafka)</li>
+                        </ul>
+
+                        <h4>Solution Stack:</h4>
+                        <p><strong>1. Correlation ID:</strong></p>
+                        <ul>
+                            <li>Generate UUID at API Gateway</li>
+                            <li>Pass via X-Correlation-ID header (HTTP) hoặc message header (Kafka)</li>
+                            <li>Log mọi operation với correlationId</li>
+                            <li>Search logs: grep correlationId → see full flow</li>
+                        </ul>
+
+                        <p><strong>2. Distributed Tracing:</strong></p>
+                        <ul>
+                            <li>OpenTelemetry auto-instrumentation</li>
+                            <li>Visualize với Jaeger/Zipkin</li>
+                            <li>See latency per service, dependencies</li>
+                        </ul>
+
+                        <p><strong>3. Centralized Logging:</strong></p>
+                        <ul>
+                            <li>ELK stack (Elasticsearch, Logstash, Kibana)</li>
+                            <li>Query all services at once</li>
+                            <li>Filter by correlationId, userId, error level</li>
+                        </ul>
+
+                        <h4>Debug Flow Example:</h4>
+                        <p><strong>Issue:</strong> Payment failed, user says "charged but no confirmation"</p>
+                        <ul>
+                            <li>Get correlationId từ user request</li>
+                            <li>Search Jaeger: API → Payment → Gateway → DB</li>
+                            <li>See: Gateway returned 200, DB save failed</li>
+                            <li>Check logs: Unique constraint violation</li>
+                            <li>Root cause: Duplicate request, idempotency check missed</li>
+                        </ul>
+
+                        <span class="tag">Distributed Tracing</span>
+                        <span class="tag">Correlation ID</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q27</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Production monitoring - metrics quan trọng cần track?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Golden Signals (Google SRE):</h4>
+                        
+                        <p><strong>1. Latency:</strong></p>
+                        <ul>
+                            <li>P50, P95, P99 response time</li>
+                            <li>Alert: P99 > 500ms</li>
+                        </ul>
+
+                        <p><strong>2. Traffic:</strong></p>
+                        <ul>
+                            <li>Requests per second</li>
+                            <li>Alert: 50% drop hoặc sudden spike</li>
+                        </ul>
+
+                        <p><strong>3. Errors:</strong></p>
+                        <ul>
+                            <li>Error rate (%)</li>
+                            <li>Alert: > 1% error rate</li>
+                        </ul>
+
+                        <p><strong>4. Saturation:</strong></p>
+                        <ul>
+                            <li>CPU, memory, disk, connection pool</li>
+                            <li>Alert: > 80% usage</li>
+                        </ul>
+
+                        <h4>Application Metrics:</h4>
+                        <ul>
+                            <li><strong>Business metrics:</strong> Payments/hour, conversion rate</li>
+                            <li><strong>Database:</strong> Query time, connection pool usage, deadlocks</li>
+                            <li><strong>Cache:</strong> Hit ratio, eviction rate</li>
+                            <li><strong>Queue:</strong> Message lag, processing time, DLQ size</li>
+                        </ul>
+
+                        <h4>Alerting Strategy:</h4>
+                        <ul>
+                            <li><strong>P0 (wake up):</strong> Complete outage, payment processing down</li>
+                            <li><strong>P1 (urgent):</strong> Degraded performance, error rate spike</li>
+                            <li><strong>P2 (business hours):</strong> High lag, cache misses</li>
+                        </ul>
+
+                        <h4>Dashboard Essentials:</h4>
+                        <ul>
+                            <li>Real-time: RPS, latency, errors</li>
+                            <li>Resources: CPU, memory per service</li>
+                            <li>Dependencies: External API status</li>
+                            <li>Business: Revenue/hour, active users</li>
+                        </ul>
+
+                        <span class="tag">Monitoring</span>
+                        <span class="tag">Metrics</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Behavioral -->
+        <div class="category">
+            <div class="category-header">
+                <span class="category-icon">💬</span>
+                <h2 class="category-title">Behavioral Questions</h2>
+                <span class="category-count">3</span>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q28</span>
+                        <span class="difficulty difficulty-easy">Easy</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Challenging technical problem - STAR method
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Situation:</h4>
+                        <p>Kafka consumer group conflicts causing duplicate payment processing. Khách hàng bị charge 2 lần.</p>
+
+                        <h4>Task:</h4>
+                        <p>Fix duplicate processing, ensure message delivery guarantees, maintain performance dưới high load.</p>
+
+                        <h4>Action:</h4>
+                        <ul>
+                            <li>Analyzed logs → discovered rebalancing causing partition re-assignment</li>
+                            <li>Implemented idempotency keys với Redis distributed locks</li>
+                            <li>Added DB unique constraint trên (idempotency_key)</li>
+                            <li>Fixed Kafka settings (session.timeout, heartbeat.interval)</li>
+                            <li>Graceful shutdown hooks để commit offsets properly</li>
+                            <li>Monitoring & alerts cho duplicate attempts</li>
+                        </ul>
+
+                        <h4>Result:</h4>
+                        <ul>
+                            <li>Zero duplicate payments (3+ months)</li>
+                            <li>Reliability: 99.5% → 99.95%</li>
+                            <li>Customer complaints giảm 80%</li>
+                            <li>Documentation cho team về best practices</li>
+                        </ul>
+
+                        <span class="tag">STAR Method</span>
+                        <span class="tag">Problem Solving</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q29</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Speed vs Quality trade-off - example?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Situation:</h4>
+                        <p>Banking integration có tight deadline - 2 tuần cho marketing campaign. Testing đầy đủ cần 3+ tuần.</p>
+
+                        <h4>Decision:</h4>
+                        <p><strong>Phase 1 (Week 1-2):</strong></p>
+                        <ul>
+                            <li>Core payment flow với thorough testing</li>
+                            <li>Basic monitoring & error handling</li>
+                            <li>Feature flags cho quick disable</li>
+                            <li>Beta launch với 100 users</li>
+                        </ul>
+
+                        <p><strong>Deferred to v2:</strong></p>
+                        <ul>
+                            <li>Advanced loyalty features</li>
+                            <li>Performance optimizations</li>
+                            <li>Edge case handling</li>
+                        </ul>
+
+                        <h4>Risk Mitigation:</h4>
+                        <ul>
+                            <li>Comprehensive monitoring từ day 1</li>
+                            <li>Manual approval cho transactions > 10M</li>
+                            <li>24/7 on-call rotation</li>
+                            <li>Rollback plan ready (feature flag)</li>
+                        </ul>
+
+                        <h4>Outcome:</h4>
+                        <ul>
+                            <li>Met deadline, campaign launched thành công</li>
+                            <li>Zero critical issues trong beta</li>
+                            <li>Gradual rollout đến 100% users (2 weeks)</li>
+                            <li>v2 delivered sau 1 tháng</li>
+                        </ul>
+
+                        <h4>Lesson:</h4>
+                        <p>Speed vs Quality không phải all-or-nothing. Với proper risk management, feature flags, monitoring → ship faster while maintaining acceptable quality. Key là biết corners nào cut được (nice-to-have) vs không được (security, data integrity).</p>
+
+                        <span class="tag">Trade-offs</span>
+                        <span class="tag">Risk Management</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q30</span>
+                        <span class="difficulty difficulty-easy">Easy</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        How do you stay updated với tech trends?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Daily Learning:</h4>
+                        <ul>
+                            <li><strong>Reading:</strong> Dev.to, Medium, Hacker News</li>
+                            <li><strong>Documentation:</strong> NestJS, PostgreSQL, Kafka official docs</li>
+                            <li><strong>Tech Twitter:</strong> Follow industry leaders</li>
+                        </ul>
+
+                        <h4>Hands-on Experimentation:</h4>
+                        <ul>
+                            <li>Tested AI tools (GitHub Copilot, Claude, Cursor)</li>
+                            <li>Researched Playwright Test Agents cho automated testing</li>
+                            <li>Explored MCP servers cho AI integration</li>
+                            <li>Evaluated PostgreSQL 17 upgrade benefits</li>
+                        </ul>
+
+                        <h4>Knowledge Sharing:</h4>
+                        <ul>
+                            <li>Internal wiki documentation</li>
+                            <li>Tech talks với team</li>
+                            <li>Mentor junior developers</li>
+                            <li>Detailed Jira tasks với context</li>
+                        </ul>
+
+                        <h4>Recent Focus:</h4>
+                        <ul>
+                            <li>AI-powered development tools</li>
+                            <li>Platform engineering trends</li>
+                            <li>DevSecOps practices</li>
+                            <li>Database optimization techniques</li>
+                        </ul>
+
+                        <span class="tag">Continuous Learning</span>
+                        <span class="tag">Knowledge Sharing</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <p>💼 Chúc bạn phỏng vấn thành công!</p>
+        <p>📧 dongtranthienio@gmail.com | 📱 +84 767 692 595</p>
+        <p style="margin-top: 1rem; opacity: 0.8; font-size: 0.85rem;">
+            Focus on concepts, trade-offs, and real-world decision making!
+        </p>
+    </div>
+
+    <script>
+        function toggleCard(card) {
+            card.classList.toggle('active');
+        }
+
+        function toggleAll(show) {
+            const cards = document.querySelectorAll('.question-card');
+            cards.forEach(card => {
+                if (show) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.remove('active');
+                }
+            });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'o' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                toggleAll(true);
+            }
+            if (e.key === 'c' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                toggleAll(false);
+            }
+        });
+    </script>
+</body>
+</html>
