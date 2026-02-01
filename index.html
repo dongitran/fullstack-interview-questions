@@ -497,7 +497,7 @@
 
     <div class="stats">
         <div class="stat-item">
-            <span class="stat-number">30</span>
+            <span class="stat-number">60</span>
             <div class="stat-label">Câu hỏi</div>
         </div>
         <div class="stat-item">
@@ -1224,7 +1224,7 @@ readinessProbe:
             <div class="category-header">
                 <span class="category-icon">🗄️</span>
                 <h2 class="category-title">Database & Performance</h2>
-                <span class="category-count">5</span>
+                <span class="category-count">35</span>
             </div>
 
             <div class="question-card" onclick="toggleCard(this)">
@@ -1510,7 +1510,1990 @@ SELECT count(*) FROM pg_stat_activity;
             </div>
         </div>
 
+            <!-- Advanced Database Questions Q31-Q60 -->
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q31</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Query Execution Plan - đọc và optimize thế nào?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>🎯 Vấn đề</h4>
+                        <p>PostgreSQL thực thi query như thế nào? Làm sao biết query chậm do đâu?</p>
+
+                        <h4>Đọc Execution Plan</h4>
+                        <p>Dùng <code>EXPLAIN (ANALYZE, BUFFERS)</code> để xem chi tiết:</p>
+                        <ul>
+                            <li><strong>Seq Scan:</strong> Đọc toàn bộ bảng (chậm với bảng lớn)</li>
+                            <li><strong>Index Scan:</strong> Dùng index (nhanh)</li>
+                            <li><strong>Bitmap Index Scan:</strong> Kết hợp nhiều index</li>
+                            <li><strong>Nested Loop:</strong> JOIN nhỏ, O(n×m)</li>
+                            <li><strong>Hash Join:</strong> JOIN lớn, build hash table</li>
+                            <li><strong>Merge Join:</strong> JOIN khi cả 2 bảng đã sorted</li>
+                        </ul>
+
+                        <h4>Red Flags 🚩</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Vấn đề</th>
+                                    <th>Giải pháp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Seq Scan trên bảng lớn</td>
+                                    <td>Thêm index</td>
+                                </tr>
+                                <tr>
+                                    <td>Rows Removed by Filter cao</td>
+                                    <td>Index không hiệu quả, thử index khác</td>
+                                </tr>
+                                <tr>
+                                    <td>High Buffers (disk read)</td>
+                                    <td>Tăng shared_buffers, thêm index</td>
+                                </tr>
+                                <tr>
+                                    <td>High cost</td>
+                                    <td>Rewrite query, thêm index</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="info-box">
+                            <strong>💡 Tip:</strong> Dùng EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) để xem chi tiết nhất
+                        </div>
+
+                        <span class="tag">Query Optimization</span>
+                        <span class="tag">PostgreSQL</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q32</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Transaction Isolation Levels - 4 levels và phenomena?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>3 Phenomena cần tránh</h4>
+                        <ul>
+                            <li><strong>Dirty Read:</strong> Đọc data chưa commit (transaction khác đang sửa)</li>
+                            <li><strong>Non-repeatable Read:</strong> Đọc lại → data đã đổi (do transaction khác commit)</li>
+                            <li><strong>Phantom Read:</strong> Query lại → có thêm/xóa rows (do transaction khác insert/delete)</li>
+                        </ul>
+
+                        <h4>4 Isolation Levels</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Level</th>
+                                    <th>Dirty Read</th>
+                                    <th>Non-repeatable</th>
+                                    <th>Phantom</th>
+                                    <th>Performance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Read Uncommitted</td>
+                                    <td>❌ Có thể</td>
+                                    <td>❌ Có thể</td>
+                                    <td>❌ Có thể</td>
+                                    <td>Nhanh nhất</td>
+                                </tr>
+                                <tr>
+                                    <td>Read Committed ⭐</td>
+                                    <td>✅ Không</td>
+                                    <td>❌ Có thể</td>
+                                    <td>❌ Có thể</td>
+                                    <td>Nhanh</td>
+                                </tr>
+                                <tr>
+                                    <td>Repeatable Read</td>
+                                    <td>✅ Không</td>
+                                    <td>✅ Không</td>
+                                    <td>❌ Có thể*</td>
+                                    <td>Chậm hơn</td>
+                                </tr>
+                                <tr>
+                                    <td>Serializable</td>
+                                    <td>✅ Không</td>
+                                    <td>✅ Không</td>
+                                    <td>✅ Không</td>
+                                    <td>Chậm nhất</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p><em>*PostgreSQL: Repeatable Read ngăn cả Phantom Read</em></p>
+
+                        <h4>Khi nào dùng gì?</h4>
+                        <ul>
+                            <li><strong>Read Committed (default):</strong> 90% trường hợp, cân bằng consistency/performance</li>
+                            <li><strong>Repeatable Read:</strong> Financial reports, cần đọc snapshot nhất quán</li>
+                            <li><strong>Serializable:</strong> Bank transfer, inventory deduction (strict consistency)</li>
+                        </ul>
+
+                        <div class="warning-box">
+                            <strong>⚠️ PostgreSQL khác MySQL:</strong> PostgreSQL default là Read Committed (an toàn), MySQL default là Repeatable Read
+                        </div>
+
+                        <span class="tag">ACID</span>
+                        <span class="tag">Transactions</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q33</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Deadlock detection và resolution?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Deadlock là gì?</h4>
+                        <p>Transaction A đang giữ lock X, cần lock Y. Transaction B đang giữ lock Y, cần lock X. Cả 2 đều chờ nhau → Deadlock!</p>
+
+                        <h4>Ví dụ thực tế</h4>
+                        <div class="code-block">T1: BEGIN; UPDATE accounts WHERE id=1; UPDATE accounts WHERE id=2; COMMIT;
+T2: BEGIN; UPDATE accounts WHERE id=2; UPDATE accounts WHERE id=1; COMMIT;
+
+→ DEADLOCK!</div>
+
+                        <h4>Cách PostgreSQL xử lý</h4>
+                        <ul>
+                            <li><strong>Detection:</strong> Tự động phát hiện deadlock (graph cycle detection)</li>
+                            <li><strong>Resolution:</strong> Kill 1 transaction (thường là cái "ít tổn thất" hơn)</li>
+                            <li><strong>Error:</strong> Transaction bị kill nhận lỗi <code>deadlock_detected</code></li>
+                        </ul>
+
+                        <h4>Prevention Strategies</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Strategy</th>
+                                    <th>Cách làm</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Consistent Ordering</td>
+                                    <td>Luôn UPDATE theo thứ tự ID (1, 2, 3...)</td>
+                                </tr>
+                                <tr>
+                                    <td>Short Transactions</td>
+                                    <td>Commit sớm, đừng giữ lock lâu</td>
+                                </tr>
+                                <tr>
+                                    <td>Use NOWAIT</td>
+                                    <td>SELECT FOR UPDATE NOWAIT → fail fast</td>
+                                </tr>
+                                <tr>
+                                    <td>Retry Logic</td>
+                                    <td>App tự retry khi gặp deadlock error</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="info-box">
+                            <strong>💡 Monitoring:</strong> Check pg_stat_database.deadlocks để biết tần suất deadlock
+                        </div>
+
+                        <span class="tag">Locking</span>
+                        <span class="tag">Deadlock</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q34</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        B-Tree Index internals - tại sao nhanh?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Array vs B-Tree</h4>
+                        <ul>
+                            <li><strong>Array:</strong> Tìm phần tử phải duyệt tuần tự O(n)</li>
+                            <li><strong>B-Tree:</strong> Cấu trúc cây, tìm kiếm O(log n)</li>
+                        </ul>
+
+                        <h4>Cấu trúc B-Tree</h4>
+                        <ul>
+                            <li><strong>Root node:</strong> Node gốc, chứa key pointers</li>
+                            <li><strong>Internal nodes:</strong> Nodes trung gian, điều hướng</li>
+                            <li><strong>Leaf nodes:</strong> Chứa actual data hoặc pointers</li>
+                            <li><strong>Balanced:</strong> Mọi path từ root đến leaf có cùng độ dài</li>
+                        </ul>
+
+                        <h4>Ví dụ: Tìm user_id = 42</h4>
+                        <div class="code-block">Root: [10, 50, 100]
+      ↓
+Internal: [30, 40, 45]
+      ↓
+Leaf: [41, 42, 43, 44] ← Found!
+
+Chỉ cần 3 disk reads thay vì scan 1000+ rows</div>
+
+                        <h4>Tại sao B-Tree phù hợp cho Database?</h4>
+                        <ul>
+                            <li>✅ Range queries hiệu quả (>,<, BETWEEN)</li>
+                            <li>✅ Insert/delete vẫn giữ cân bằng</li>
+                            <li>✅ Sequential access tốt (leaf nodes linked)</li>
+                            <li>✅ Disk-friendly (mỗi node = 1 disk page)</li>
+                        </ul>
+
+                        <h4>Khi nào KHÔNG dùng B-Tree?</h4>
+                        <ul>
+                            <li>Equality-only với low cardinality → Hash index</li>
+                            <li>Full-text search → GIN/GiST index</li>
+                            <li>Geospatial → GiST/SP-GiST</li>
+                        </ul>
+
+                        <span class="tag">B-Tree</span>
+                        <span class="tag">Index Internals</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q35</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        VACUUM và ANALYZE - tại sao cần?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>MVCC và Dead Tuples</h4>
+                        <p>PostgreSQL dùng MVCC (Multi-Version Concurrency Control):</p>
+                        <ul>
+                            <li>UPDATE = INSERT row mới + đánh dấu row cũ là "dead"</li>
+                            <li>DELETE = đánh dấu row là "dead"</li>
+                            <li>Row "dead" vẫn chiếm disk space!</li>
+                        </ul>
+
+                        <h4>VACUUM - Dọn rác</h4>
+                        <p><strong>Công dụng:</strong></p>
+                        <ul>
+                            <li>Xóa dead tuples (rows đã update/delete)</li>
+                            <li>Giải phóng disk space (trong table, không trả về OS)</li>
+                            <li>Update visibility map (cho index-only scans)</li>
+                            <li>Prevent transaction ID wraparound</li>
+                        </ul>
+
+                        <h4>VACUUM FULL vs VACUUM</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>VACUUM</th>
+                                    <th>VACUUM FULL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Non-blocking</td>
+                                    <td>Blocking (table lock)</td>
+                                </tr>
+                                <tr>
+                                    <td>Space giải phóng tái sử dụng</td>
+                                    <td>Trả space về OS</td>
+                                </tr>
+                                <tr>
+                                    <td>Chạy thường xuyên</td>
+                                    <td>Chỉ khi cần thiết</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>ANALYZE - Cập nhật Statistics</h4>
+                        <p>PostgreSQL cần biết:</p>
+                        <ul>
+                            <li>Bảng có bao nhiêu rows?</li>
+                            <li>Data phân bố thế nào?</li>
+                            <li>Most common values là gì?</li>
+                        </ul>
+                        <p>→ Từ đó query planner chọn execution plan tối ưu</p>
+
+                        <div class="warning-box">
+                            <strong>⚠️ VACUUM không tự chạy đủ:</strong> Nếu autovacuum không kịp, table sẽ phình to. Monitor pg_stat_user_tables.n_dead_tup
+                        </div>
+
+                        <span class="tag">PostgreSQL</span>
+                        <span class="tag">Maintenance</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q36</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Table Partitioning - khi nào cần và chiến lược?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Khi nào cần Partitioning?</h4>
+                        <ul>
+                            <li>Table > 100GB (query chậm, maintenance khó)</li>
+                            <li>Query thường chỉ access subset data (time range, region)</li>
+                            <li>Cần archive/delete old data thường xuyên</li>
+                            <li>Index không vừa RAM</li>
+                        </ul>
+
+                        <h4>Partitioning Strategies</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Strategy</th>
+                                    <th>Phù hợp khi</th>
+                                    <th>Ví dụ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Range</td>
+                                    <td>Time-series data</td>
+                                    <td>orders_2024_01, orders_2024_02</td>
+                                </tr>
+                                <tr>
+                                    <td>List</td>
+                                    <td>Discrete categories</td>
+                                    <td>region_vn, region_us, region_eu</td>
+                                </tr>
+                                <tr>
+                                    <td>Hash</td>
+                                    <td>Even distribution</td>
+                                    <td>user_id % 10</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Benefits</h4>
+                        <ul>
+                            <li>✅ Query chỉ scan partition liên quan (partition pruning)</li>
+                            <li>✅ Maintenance dễ hơn (VACUUM, REINDEX từng partition)</li>
+                            <li>✅ Archive old data bằng cách detach partition</li>
+                            <li>✅ Parallel processing trên nhiều partitions</li>
+                        </ul>
+
+                        <h4>Trade-offs</h4>
+                        <ul>
+                            <li>❌ Query không có partition key → scan all partitions</li>
+                            <li>❌ Unique constraints phải include partition key</li>
+                            <li>❌ Complexity tăng</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>💡 PostgreSQL 10+:</strong> Declarative partitioning (CREATE TABLE ... PARTITION BY) dễ dùng hơn manual inheritance
+                        </div>
+
+                        <span class="tag">Partitioning</span>
+                        <span class="tag">Performance</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q37</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Replication lag - nguyên nhân và giải pháp?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Replication là gì?</h4>
+                        <p>Primary (write) → gửi WAL (Write-Ahead Log) → Standby (read) áp dụng</p>
+
+                        <h4>Lag là gì?</h4>
+                        <p>Data đã commit trên Primary nhưng Standby chưa nhận/apply</p>
+
+                        <h4>Nguyên nhân lag</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nguyên nhân</th>
+                                    <th>Giải pháp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Network chậm</td>
+                                    <td>Thêm bandwidth, dùng compression</td>
+                                </tr>
+                                <tr>
+                                    <td>Standby yếu</td>
+                                    <td>Scale up standby (CPU/disk)</td>
+                                </tr>
+                                <tr>
+                                    <td>Query nặng trên standby</td>
+                                    <td>max_standby_streaming_delay, hot_standby_feedback</td>
+                                </tr>
+                                <tr>
+                                    <td>Too many writes</td>
+                                    <td>max_wal_size, checkpoint tuning</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Giải pháp cho Read Replica</h4>
+                        <ul>
+                            <li><strong>Routing logic:</strong> Đọc từ Primary nếu lag > threshold (ví dụ: 1 giây)</li>
+                            <li><strong>Sticky sessions:</strong> User vừa write → đọc từ Primary trong X giây</li>
+                            <li><strong>Eventual consistency UI:</strong> Hiển thị "đang đồng bộ" nếu data cũ</li>
+                        </ul>
+
+                        <div class="warning-box">
+                            <strong>⚠️ Critical:</strong> Payment status query → luôn đọc từ Primary (lag unacceptable)
+                        </div>
+
+                        <span class="tag">Replication</span>
+                        <span class="tag">High Availability</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q38</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        JSONB trong PostgreSQL - khi nào dùng?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>JSON vs JSONB</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>JSON</th>
+                                    <th>JSONB ⭐</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Store as text</td>
+                                    <td>Store as binary (parsed)</td>
+                                </tr>
+                                <tr>
+                                    <td>Slow query</td>
+                                    <td>Fast query</td>
+                                </tr>
+                                <tr>
+                                    <td>Giữ nguyên whitespace</td>
+                                    <td>Optimized storage</td>
+                                </tr>
+                                <tr>
+                                    <td>Không support indexing</td>
+                                    <td>Support GIN index</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Khi nào dùng JSONB?</h4>
+                        <ul>
+                            <li><strong>Schema linh hoạt:</strong> Product variants, cấu hình</li>
+                            <li><strong>Nested data:</strong> API response cache</li>
+                            <li><strong>Rarely queried:</strong> Audit logs, event data</li>
+                            <li><strong>Prototype nhanh:</strong> Chưa cần normalize</li>
+                        </ul>
+
+                        <h4>Khi nào KHÔNG dùng?</h4>
+                        <ul>
+                            <li>❌ Cần JOIN, aggregation phức tạp</li>
+                            <li>❌ Cần foreign key constraints</li>
+                            <li>❌ Cần unique constraints</li>
+                            <li>❌ Data structure ổn định</li>
+                        </ul>
+
+                        <h4>Query JSONB</h4>
+                        <div class="code-block">-- Get value
+SELECT data->>'name' FROM users;
+
+-- Check exists
+SELECT * FROM products WHERE metadata @> '{"color": "red"}';
+
+-- Index
+CREATE INDEX idx_data ON products USING GIN (metadata);</div>
+
+                        <span class="tag">JSONB</span>
+                        <span class="tag">PostgreSQL</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q39</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Event Sourcing pattern - khái niệm và use cases?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Traditional vs Event Sourcing</h4>
+                        <p><strong>Traditional:</strong> Lưu state hiện tại (balance = $100)</p>
+                        <p><strong>Event Sourcing:</strong> Lưu chuỗi events (Deposited $50, Deposited $100, Withdrew $50)</p>
+
+                        <h4>Components</h4>
+                        <ul>
+                            <li><strong>Event Store:</strong> Append-only log của events</li>
+                            <li><strong>Aggregate:</strong> Replay events để tính state</li>
+                            <li><strong>Projection:</strong> Read model được build từ events</li>
+                            <li><strong>Snapshot:</strong> Cache state để không replay từ đầu</li>
+                        </ul>
+
+                        <h4>Benefits</h4>
+                        <ul>
+                            <li>✅ Audit trail hoàn chỉnh (biết data đổi từ khi nào)</li>
+                            <li>✅ Time travel (xem state ở bất kỳ thờ điểm)</li>
+                            <li>✅ Rebuild read models từ events</li>
+                            <li>✅ Event-driven architecture tự nhiên</li>
+                        </ul>
+
+                        <h4>Trade-offs</h4>
+                        <ul>
+                            <li>❌ Complexity cao</li>
+                            <li>❌ Event schema evolution khó</li>
+                            <li>❌ Query phức tạp (phải qua projection)</li>
+                            <li>❌ Storage tăng (lưu tất cả events)</li>
+                        </ul>
+
+                        <h4>Use Cases</h4>
+                        <ul>
+                            <li>Financial ledger (banking, accounting)</li>
+                            <li>Inventory systems</li>
+                            <li>Audit-heavy applications</li>
+                        </ul>
+
+                        <span class="tag">Event Sourcing</span>
+                        <span class="tag">CQRS</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q40</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Connection Pool với PgBouncer - tại sao cần?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Vấn đề: Too many connections</h4>
+                        <ul>
+                            <li>App có 100 instances</li>
+                            <li>Mỗi instance 10 connections = 1000 total</li>
+                            <li>PostgreSQL max_connections = 100 (default)</li>
+                            <li>→ Connection exhausted!</li>
+                        </ul>
+
+                        <h4>PgBouncer là gì?</h4>
+                        <p>Connection pooler đứng giữa app và PostgreSQL:</p>
+                        <div class="code-block">App (1000 connections) 
+    ↓
+PgBouncer (giữ 100 connections thật, reuse cho 1000 app)
+    ↓
+PostgreSQL (chỉ thấy 100 connections)</div>
+
+                        <h4>Pool Modes</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mode</th>
+                                    <th>Cách hoạt động</th>
+                                    <th>Use case</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Session</td>
+                                    <td>Connection gán cho cả session</td>
+                                    <td>Prepared statements, temp tables</td>
+                                </tr>
+                                <tr>
+                                    <td>Transaction ⭐</td>
+                                    <td>Connection gán cho từng transaction</td>
+                                    <td>REST API (stateless)</td>
+                                </tr>
+                                <tr>
+                                    <td>Statement</td>
+                                    <td>Connection gán cho từng query</td>
+                                    <td>Autocommit mode only</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="info-box">
+                            <strong>💡 Recommendation:</strong> Dùng Transaction mode cho 90% use cases (REST APIs)
+                        </div>
+
+                        <span class="tag">PgBouncer</span>
+                        <span class="tag">Connection Pool</span>
+                    </div>
+                </div>
+            </div>
+
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q41</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Window Functions - ROW_NUMBER, RANK, LAG/LEAD?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Vấn đề: Aggregation nhưng giữ chi tiết</h4>
+                        <p>Muốn so sánh salary với average của department, nhưng không muốn GROUP BY mất chi tiết từng employee.</p>
+
+                        <h4>Window Functions giải quyết</h4>
+                        <p>Calculate aggregate (MAX, AVG, SUM...) <strong>OVER</strong> a window of rows, giữ nguyên từng row.</p>
+
+                        <h4>Common Functions</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Function</th>
+                                    <th>Mô tả</th>
+                                    <th>Ví dụ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ROW_NUMBER()</td>
+                                    <td>Number từ 1, unique</td>
+                                    <td>Top 3 mỗi category</td>
+                                </tr>
+                                <tr>
+                                    <td>RANK()</td>
+                                    <td>Rank, có gaps (1, 2, 2, 4)</td>
+                                    <td>Leaderboard</td>
+                                </tr>
+                                <tr>
+                                    <td>DENSE_RANK()</td>
+                                    <td>Rank, không gaps (1, 2, 2, 3)</td>
+                                    <td>Tier ranking</td>
+                                </tr>
+                                <tr>
+                                    <td>LAG(col)</td>
+                                    <td>Giá trị row trước</td>
+                                    <td>So sánh tháng trước</td>
+                                </tr>
+                                <tr>
+                                    <td>LEAD(col)</td>
+                                    <td>Giá trị row sau</td>
+                                    <td>Dự báo</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Ví dụ thực tế</h4>
+                        <div class="code-block">-- Top 3 highest paid employees per department
+SELECT *
+FROM (
+    SELECT *,
+           ROW_NUMBER() OVER (PARTITION BY dept ORDER BY salary DESC) as rank
+    FROM employees
+) sub
+WHERE rank <= 3;
+
+-- Salary vs department average
+SELECT name, salary,
+       AVG(salary) OVER (PARTITION BY dept) as dept_avg
+FROM employees;</div>
+
+                        <span class="tag">Window Functions</span>
+                        <span class="tag">PostgreSQL</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q42</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Full-Text Search trong PostgreSQL?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Vấn đề: Search không chính xác</h4>
+                        <p><code>LIKE '%keyword%'</code> chậm (full table scan) và không tìm được "running" khi search "run".</p>
+
+                        <h4>PostgreSQL Full-Text Search</h4>
+                        <ul>
+                            <li>Chuyển text thành <strong>tsvector</strong> (normalized tokens)</li>
+                            <li>Chuyển query thành <strong>tsquery</strong></li>
+                            <li>Match dùng <strong>@@</strong> operator</li>
+                        </ul>
+
+                        <h4>Basic Usage</h4>
+                        <div class="code-block">-- Simple search
+SELECT * FROM articles 
+WHERE to_tsvector('english', content) @@ to_tsquery('english', 'postgresql');
+
+-- With ranking
+SELECT *, ts_rank(to_tsvector(content), query) as rank
+FROM articles, plainto_tsquery('english', 'search terms') query
+WHERE to_tsvector(content) @@ query
+ORDER BY rank DESC;</div>
+
+                        <h4>Performance Optimization</h4>
+                        <ul>
+                            <li><strong>GIN Index:</strong> CREATE INDEX idx_fts ON articles USING GIN (to_tsvector('english', content));</li>
+                            <li><strong>Precomputed column:</strong> Thêm tsvector column, update trigger</li>
+                            <li><strong>Weights:</strong> Title quan trọng hơn content (setweight)</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>💡 ElasticSearch vs PostgreSQL FTS:</strong> ElasticSearch mạnh hơn (fuzzy search, suggestions), nhưng PostgreSQL FTS đủ cho 90% use cases và đơn giản hơn
+                        </div>
+
+                        <span class="tag">Full-Text Search</span>
+                        <span class="tag">GIN Index</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q43</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Write-Ahead Logging (WAL) - tại sao cần?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Vấn đề: Data durability</h4>
+                        <p>Nếu server crash giữa chừng UPDATE, data có bị hỏng không? Làm sao recover?</p>
+
+                        <h4>WAL giải quyết</h4>
+                        <p><strong>Trước khi ghi data page:</strong> Ghi log vào WAL trước (append-only, sequential)</p>
+                        <p><strong>Sau khi WAL fsync:</strong> Mới ghi vào data files</p>
+
+                        <h4>Lợi ích</h4>
+                        <ul>
+                            <li>✅ <strong>Durability:</strong> WAL fsync = data an toàn, dù chưa ghi vào data file</li>
+                            <li>✅ <strong>Crash recovery:</strong> Replay WAL để restore sau crash</li>
+                            <li>✅ <strong>Replication:</strong> Standby apply WAL để replicate</li>
+                            <li>✅ <strong>Random → Sequential:</strong> WAL write sequential (nhanh), data write batch sau</li>
+                        </ul>
+
+                        <h4>Performance Tuning</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Setting</th>
+                                    <th>Giá trị</th>
+                                    <th>Ý nghĩa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>synchronous_commit</td>
+                                    <td>on/off</td>
+                                    <td>on = wait WAL fsync (safe), off = faster (risky)</td>
+                                </tr>
+                                <tr>
+                                    <td>wal_buffers</td>
+                                    <td>16MB</td>
+                                    <td>WAL buffer size</td>
+                                </tr>
+                                <tr>
+                                    <td>checkpoint_timeout</td>
+                                    <td>5min</td>
+                                    <td>Bao lâu force WAL → data files</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <span class="tag">WAL</span>
+                        <span class="tag">Internals</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q44</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Hot Standby vs Warm Standby?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Warm Standby</h4>
+                        <ul>
+                            <li>Standby chỉ nhận WAL, không cho read</li>
+                            <li>Dùng cho disaster recovery</li>
+                            <li>Switchover mới có thể read</li>
+                        </ul>
+
+                        <h4>Hot Standby ⭐</h4>
+                        <ul>
+                            <li>Standby nhận WAL VÀ cho read queries</li>
+                            <li>Read replica pattern</li>
+                            <li>Scale reads</li>
+                        </ul>
+
+                        <h4>So sánh</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Feature</th>
+                                    <th>Warm</th>
+                                    <th>Hot</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Read queries</td>
+                                    <td>❌ Không</td>
+                                    <td>✅ Có</td>
+                                </tr>
+                                <tr>
+                                    <td>Replication lag</td>
+                                    <td>Ít quan trọng</td>
+                                    <td>Cần monitor</td>
+                                </tr>
+                                <tr>
+                                    <td>Conflict</td>
+                                    <td>Không có</td>
+                                    <td>Hot standby feedback</td>
+                                </tr>
+                                <tr>
+                                    <td>Use case</td>
+                                    <td>DR only</td>
+                                    <td>DR + Read scaling</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="info-box">
+                            <strong>💡 PostgreSQL 9.0+:</strong> Hot standby built-in, chỉ cần hot_standby = on trong postgresql.conf
+                        </div>
+
+                        <span class="tag">Replication</span>
+                        <span class="tag">High Availability</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q45</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Covering Index - khi nào và tại sao nhanh?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Vấn đề: Index + Table lookup</h4>
+                        <p>Thông thường: Tìm trong index → lấy pointer → đọc từ table → <strong>2 disk reads</strong></p>
+
+                        <h4>Covering Index giải quyết</h4>
+                        <p>Index chứa <strong>tất cả columns</strong> cần cho query (INCLUDE columns)</p>
+                        <p>→ Chỉ cần đọc index, không cần đọc table → <strong>Index-Only Scan</strong></p>
+
+                        <h4>Ví dụ</h4>
+                        <div class="code-block">-- Query thường xuyên
+SELECT user_id, created_at FROM orders 
+WHERE status = 'completed';
+
+-- Covering Index (status trong index, user_id + created_at trong INCLUDE)
+CREATE INDEX idx_covering ON orders(status) 
+INCLUDE (user_id, created_at);
+
+-- PostgreSQL chỉ cần đọc index, không cần table lookup</div>
+
+                        <h4>Trade-offs</h4>
+                        <ul>
+                            <li>✅ Query nhanh hơn (1 read vs 2 reads)</li>
+                            <li>❌ Index lớn hơn (chiếm disk space)</li>
+                            <li>❌ Insert/update chậm hơn (nhiều column cần update)</li>
+                        </ul>
+
+                        <div class="warning-box">
+                            <strong>⚠️ PostgreSQL cần Visibility Map:</strong> Index-only scan chỉ hoạt động khi PostgreSQL biết tất cả tuples trong page đều visible (đã VACUUM)
+                        </div>
+
+                        <span class="tag">Indexing</span>
+                        <span class="tag">Query Optimization</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q46</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Time-Series Database - khi nào dùng TimescaleDB?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Time-Series Data là gì?</h4>
+                        <p>Data được ghi theo thờ gian: metrics, sensor data, stock prices, logs</p>
+                        <p><strong>Pattern:</strong> Write-heavy, read recent data, aggregate by time range</p>
+
+                        <h4>Vấn đề với PostgreSQL thường</h4>
+                        <ul>
+                            <li>Table lớn → query chậm</li>
+                            <li>Delete old data expensive</li>
+                            <li>Time-based aggregation không optimize</li>
+                        </ul>
+
+                        <h4>TimescaleDB (PostgreSQL extension)</h4>
+                        <p>Giữ nguyên SQL, thêm optimizations cho time-series:</p>
+                        <ul>
+                            <li><strong>Hypertables:</strong> Auto-partition theo time</li>
+                            <li><strong>Chunking:</strong> Mỗi partition = 1 time range (1 ngày, 1 tuần)</li>
+                            <li><strong>Time-based indexing:</strong> Optimize cho time range queries</li>
+                            <li><strong>Compression:</strong> Nén old data (10x reduction)</li>
+                            <li><strong>Continuous aggregates:</strong> Pre-computed rollups</li>
+                        </ul>
+
+                        <h4>Khi nào dùng?</h4>
+                        <ul>
+                            <li>✅ IoT sensor data</li>
+                            <li>✅ Application metrics</li>
+                            <li>✅ Financial tick data</li>
+                            <li>✅ Logs (nếu query nhiều)</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>💡 TimescaleDB vs InfluxDB:</strong> TimescaleDB = PostgreSQL (ecosystem quen thuộc), InfluxDB = purpose-built (hiệu năng cao hơn cho pure time-series)
+                        </div>
+
+                        <span class="tag">Time-Series</span>
+                        <span class="tag">TimescaleDB</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q47</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        CQRS Pattern - Command Query Responsibility Segregation?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Traditional CRUD</h4>
+                        <p>Cùng 1 model cho cả read và write. Đơn giản nhưng không optimize cho từng use case.</p>
+
+                        <h4>CQRS tách biệt</h4>
+                        <ul>
+                            <li><strong>Command Model:</strong> Optimized cho writes (normalized, constraints)</li>
+                            <li><strong>Query Model:</strong> Optimized cho reads (denormalized, specific views)</li>
+                            <li><strong>Sync:</strong> Command model → events → update query models</li>
+                        </ul>
+
+                        <h4>Ví dụ: E-commerce</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Command</th>
+                                    <th>Query</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>orders table (normalized)</td>
+                                    <td>order_summary_view (denormalized)</td>
+                                </tr>
+                                <tr>
+                                    <td>Insert order</td>
+                                    <td>Get order với user info, products</td>
+                                </tr>
+                                <tr>
+                                    <td>ACID constraints</td>
+                                    <td>No joins, fast read</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Benefits</h4>
+                        <ul>
+                            <li>✅ Optimize riêng cho read và write</li>
+                            <li>✅ Scale read replicas independently</li>
+                            <li>✅ Different database technologies (Postgres + ElasticSearch)</li>
+                        </ul>
+
+                        <h4>Trade-offs</h4>
+                        <ul>
+                            <li>❌ Complexity tăng</li>
+                            <li>❌ Eventual consistency (lag giữa command và query)</li>
+                            <li>❌ Sync logic cần maintain</li>
+                        </ul>
+
+                        <div class="warning-box">
+                            <strong>⚠️ Don't use CQRS everywhere:</strong> Chỉ dùng khi read/write patterns khác biệt lớn, hoặc cần scale reads independently
+                        </div>
+
+                        <span class="tag">CQRS</span>
+                        <span class="tag">Architecture</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q48</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Backup Strategies - Full, Incremental, Point-in-Time?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>1. Full Backup</h4>
+                        <ul>
+                            <li>Copy toàn bộ database</li>
+                            <li>Restore nhanh nhất (chỉ 1 file)</li>
+                            <li>Backup lâu, tốn storage</li>
+                            <li>Thường: Weekly</li>
+                        </ul>
+
+                        <h4>2. Incremental Backup</h4>
+                        <ul>
+                            <li>Chỉ backup thay đổi từ lần backup trước</li>
+                            <li>Nhanh hơn, ít space hơn</li>
+                            <li>Restore chậm (phải apply nhiều files)</li>
+                            <li>Thường: Daily</li>
+                        </ul>
+
+                        <h4>3. Point-in-Time Recovery (PITR)</h4>
+                        <ul>
+                            <li>Full backup + WAL (Write-Ahead Log) liên tục</li>
+                            <li>Restore đến bất kỳ thờ điểm nào</li>
+                            <li>Phục hồi sau accidental DELETE</li>
+                            <li>Thường: WAL archive liên tục</li>
+                        </ul>
+
+                        <h4>PostgreSQL Tools</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tool</th>
+                                    <th>Loại</th>
+                                    <th>Use case</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>pg_dump</td>
+                                    <td>Logical (SQL)</td>
+                                    <td>Migration, partial backup</td>
+                                </tr>
+                                <tr>
+                                    <td>pg_basebackup</td>
+                                    <td>Physical</td>
+                                    <td>Full backup, replication</td>
+                                </tr>
+                                <tr>
+                                    <td>WAL archiving</td>
+                                    <td>PITR</td>
+                                    <td>Point-in-time recovery</td>
+                                </tr>
+                                <tr>
+                                    <td>pgBackRest</td>
+                                    <td>All-in-one</td>
+                                    <td>Enterprise backup</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="warning-box">
+                            <strong>⚠️ 3-2-1 Rule:</strong> 3 copies, 2 different media, 1 offsite
+                        </div>
+
+                        <span class="tag">Backup</span>
+                        <span class="tag">Disaster Recovery</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q49</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Materialized Views - khi nào dùng và refresh thế nào?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>View vs Materialized View</h4>
+                        <p><strong>View:</strong> Virtual table, query chạy mỗi lần access</p>
+                        <p><strong>Materialized View:</strong> Lưu kết quả physically, query từ stored data</p>
+
+                        <h4>Khi nào dùng?</h4>
+                        <ul>
+                            <li>Query phức tạp, chạy lâu (nhiều JOIN, aggregation)</li>
+                            <li>Data không cần real-time</li>
+                            <li>Read-heavy, write-rare</li>
+                            <li>Ví dụ: Daily reports, dashboard data</li>
+                        </ul>
+
+                        <h4>Refresh Strategies</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Method</th>
+                                    <th>Cách làm</th>
+                                    <th>Trade-off</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>REFRESH MATERIALIZED VIEW</td>
+                                    <td>Manual trigger</td>
+                                    <td>Full rebuild, block reads</td>
+                                </tr>
+                                <tr>
+                                    <td>REFRESH CONCURRENTLY</td>
+                                    <td>Non-blocking refresh</td>
+                                    <td>Chậm hơn, cần unique index</td>
+                                </tr>
+                                <tr>
+                                    <td>Cron job</td>
+                                    <td>Schedule refresh</td>
+                                    <td>Periodic updates</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="info-box">
+                            <strong>💡 PostgreSQL 9.4+:</strong> REFRESH CONCURRENTLY cho phép refresh không block read queries
+                        </div>
+
+                        <span class="tag">Materialized Views</span>
+                        <span class="tag">Performance</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q50</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Database Failover - automatic và manual?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Failover là gì?</h4>
+                        <p>Khi Primary database down, chuyển sang Standby làm Primary mới.</p>
+
+                        <h4>Manual Failover</h4>
+                        <ul>
+                            <li>Admin quyết định và thực hiện promote standby</li>
+                            <li>Control tốt hơn, tránh false positives</li>
+                            <li>Chậm hơn (cần người can thiệp)</li>
+                        </ul>
+
+                        <h4>Automatic Failover</h4>
+                        <ul>
+                            <li>Tools: Patroni, repmgr, Stolon</li>
+                            <li>Monitor detects failure → tự động promote</li>
+                            <li>Nhanh hơn (giây), nhưng risk split-brain</li>
+                        </ul>
+
+                        <h4>Split-Brain Problem</h4>
+                        <p><strong>Vấn đề:</strong> Cả 2 node đều nghĩ mình là Primary → data divergence</p>
+                        <p><strong>Giải pháp:</strong></p>
+                        <ul>
+                            <li>Quorum-based (Patroni + etcd/ZooKeeper)</li>
+                            <li>STONITH (Shoot The Other Node In The Head)</li>
+                            <li>Manual intervention khi unsure</li>
+                        </ul>
+
+                        <h4>Failover Checklist</h4>
+                        <ol>
+                            <li>Xác định Primary thật sự down (không phải network partition)</li>
+                            <li>Promote Standby lên Primary</li>
+                            <li>Update connection strings (DNS, service discovery)</li>
+                            <li>Verify replication sau failover</li>
+                            <li>Investigate và fix old Primary</li>
+                        </ol>
+
+                        <span class="tag">Failover</span>
+                        <span class="tag">High Availability</span>
+                    </div>
+                </div>
+            </div>
+
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q51</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        SELECT FOR UPDATE - khi nào dùng và cẩn thận gì?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Vấn đề: Race condition</h4>
+                        <p>2 transactions cùng đọc balance = 100, cùng update → mất mất 1 update!</p>
+
+                        <h4>SELECT FOR UPDATE giải quyết</h4>
+                        <p>Lock rows ngay khi SELECT, không cho transaction khác sửa.</p>
+
+                        <div class="code-block">BEGIN;
+-- Lock row cho đến khi COMMIT
+SELECT balance FROM accounts WHERE id = 1 FOR UPDATE;
+-- Transaction khác muốn SELECT FOR UPDATE phải đợi
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+COMMIT;</div>
+
+                        <h4>Các loại row lock</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Lock</th>
+                                    <th>Mô tả</th>
+                                    <th>Use case</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>FOR UPDATE</td>
+                                    <td>Block read/write</td>
+                                    <td>Update/delete sắp tới</td>
+                                </tr>
+                                <tr>
+                                    <td>FOR SHARE</td>
+                                    <td>Block write, cho read</td>
+                                    <td>Prevent modification</td>
+                                </tr>
+                                <tr>
+                                    <td>FOR NO KEY UPDATE</td>
+                                    <td>Block không phải key update</td>
+                                    <td>Update non-key columns</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Cẩn thận</h4>
+                        <ul>
+                            <li>❌ Lock lâu = block app khác → ngắn gọn transaction</li>
+                            <li>❌ Không có index = table lock → đảm bảo WHERE dùng index</li>
+                            <li>✅ NOWAIT: Fail fast nếu không lock được</li>
+                        </ul>
+
+                        <span class="tag">Locking</span>
+                        <span class="tag">Concurrency</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q52</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Recursive CTE - xử lý hierarchical data?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Hierarchical Data</h4>
+                        <p>Org chart, category tree, comment threads (parent-child relationships)</p>
+
+                        <h4>Ví dụ: Category Tree</h4>
+                        <div class="code-block">categories:
+id | name      | parent_id
+1  | Electronics | NULL
+2  | Phones      | 1
+3  | Laptops     | 1
+4  | iPhone      | 2
+5  | Samsung     | 2</div>
+
+                        <h4>Recursive CTE</h4>
+                        <div class="code-block">WITH RECURSIVE category_tree AS (
+    -- Base case: root categories
+    SELECT id, name, parent_id, 0 as depth
+    FROM categories
+    WHERE parent_id IS NULL
+    
+    UNION ALL
+    
+    -- Recursive: children
+    SELECT c.id, c.name, c.parent_id, ct.depth + 1
+    FROM categories c
+    JOIN category_tree ct ON c.parent_id = ct.id
+)
+SELECT * FROM category_tree;</div>
+
+                        <h4>Kết quả</h4>
+                        <div class="code-block">1, Electronics, NULL, 0
+2, Phones, 1, 1
+3, Laptops, 1, 1
+4, iPhone, 2, 2
+5, Samsung, 2, 2</div>
+
+                        <div class="info-box">
+                            <strong>💡 Cẩn thận:</strong> Recursive CTE có thể infinite loop nếu data có cycle. Thêm MAXRECURSION hoặc cycle detection.
+                        </div>
+
+                        <span class="tag">CTE</span>
+                        <span class="tag">Recursive</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q53</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Database Migration - zero-downtime strategy?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Expansion-Contrction Pattern</h4>
+                        <p>Không làm breaking change 1 lúc, chia thành nhiều deploy.</p>
+
+                        <h4>Ví dụ: Rename column</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Deploy</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1. Expand</td>
+                                    <td>Thêm new_column, write cả 2 columns</td>
+                                </tr>
+                                <tr>
+                                    <td>2. Migrate</td>
+                                    <td>Copy data cũ → mới (background)</td>
+                                </tr>
+                                <tr>
+                                    <td>3. Switch</td>
+                                    <td>Read từ new_column, write cả 2</td>
+                                </tr>
+                                <tr>
+                                    <td>4. Contract</td>
+                                    <td>Xóa old_column</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Add Column với Default</h4>
+                        <ul>
+                            <li>PostgreSQL 11+: ADD COLUMN DEFAULT không lock table</li>
+                            <li>PostgreSQL < 11: ADD COLUMN (nullable) → UPDATE (batch) → ADD DEFAULT</li>
+                        </ul>
+
+                        <h4>Tools</h4>
+                        <ul>
+                            <li><strong>pt-online-schema-change:</strong> Percona toolkit cho MySQL</li>
+                            <li><strong>pg-online-schema-change:</strong> Tương tự cho PostgreSQL</li>
+                            <li><strong>Reshape:</strong> Schema migration tool</li>
+                        </ul>
+
+                        <span class="tag">Migration</span>
+                        <span class="tag">Zero Downtime</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q54</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        TOAST - PostgreSQL xử lý large objects thế nào?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Vấn đề: Row size limit</h4>
+                        <p>PostgreSQL row tối đa 8KB (1 page). Làm sao lưu TEXT lớn, JSON lớn?</p>
+
+                        <h4>TOAST (The Oversized-Attribute Storage Technique)</h4>
+                        <p>Tự động compress và split large values:</p>
+                        <ul>
+                            <li>Data > 2KB → Compress thử</li>
+                            <li>Vẫn > 2KB → Split thành chunks, lưu ở TOAST table</li>
+                            <li>Main table chỉ lưu pointer (TOAST pointer)</li>
+                        </ul>
+
+                        <h4>Storage Strategies</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Strategy</th>
+                                    <th>Mô tả</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>EXTENDED (default)</td>
+                                    <td>Compress + TOAST</td>
+                                </tr>
+                                <tr>
+                                    <td>EXTERNAL</td>
+                                    <td>TOAST nhưng không compress</td>
+                                </tr>
+                                <tr>
+                                    <td>MAIN</td>
+                                    <td>Compress nhưng cố gắng không TOAST</td>
+                                </tr>
+                                <tr>
+                                    <td>PLAIN</td>
+                                    <td>Không TOAST, inline only</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="warning-box">
+                            <strong>⚠️ Performance:</strong> Access TOASTed data chậm hơn (extra lookup). Cột thường access cùng nhau nên để cùng storage strategy.
+                        </div>
+
+                        <span class="tag">TOAST</span>
+                        <span class="tag">Internals</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q55</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Prepared Statements - lợi ích và khi nào dùng?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Prepared Statement là gì?</h4>
+                        <p>Parse + Plan query 1 lần, execute nhiều lần với different parameters.</p>
+
+                        <div class="code-block">-- Prepare
+PREPARE get_user (INT) AS
+    SELECT * FROM users WHERE id = $1;
+
+-- Execute nhiều lần
+EXECUTE get_user(1);
+EXECUTE get_user(2);
+EXECUTE get_user(3);</div>
+
+                        <h4>Lợi ích</h4>
+                        <ul>
+                            <li>✅ Tránh parse overhead (query giống nhau, params khác)</li>
+                            <li>✅ Plan reuse (nhưng PostgreSQL có thể replan)</li>
+                            <li>✅ Security: Phòng SQL injection (params separate)</li>
+                        </ul>
+
+                        <h4>Trade-offs</h4>
+                        <ul>
+                            <li>❌ Generic plan có thể không tối ưu (không biết params)</li>
+                            <li>❌ Memory usage (caching plans)</li>
+                            <li>❌ Không dùng được với PgBouncer transaction pooling</li>
+                        </ul>
+
+                        <h4>Best Practice</h4>
+                        <p>Dùng khi: Same query chạy > 5 lần với different params</p>
+
+                        <span class="tag">Performance</span>
+                        <span class="tag">Query Optimization</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q56</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Advisory Locks - lock tùy chỉnh trong PostgreSQL?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Vấn đề: Row lock không đủ</h4>
+                        <p>Muốn lock logic (ví dụ: "không cho xử lý payment cho user này"), không liên quan đến row cụ thể.</p>
+
+                        <h4>Advisory Locks</h4>
+                        <p>Lock trên application-level key (số hoặc string), không liên quan đến table.</p>
+
+                        <div class="code-block">-- Lock (blocking)
+SELECT pg_advisory_lock(user_id);
+
+-- Try lock (non-blocking)
+SELECT pg_try_advisory_lock(user_id);
+
+-- Unlock
+SELECT pg_advisory_unlock(user_id);</div>
+
+                        <h4>Use Cases</h4>
+                        <ul>
+                            <li><strong>Idempotency:</strong> Đảm bảo 1 operation chạy 1 lần cho user</li>
+                            <li><strong>Rate limiting:</strong> Giới hạn concurrent operations</li>
+                            <li><strong>Background jobs:</strong> Đảm bảo job không chạy duplicate</li>
+                        </ul>
+
+                        <h4>So sánh với Redis Lock</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>PostgreSQL Advisory</th>
+                                    <th>Redis Redlock</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Đơn giản (1 command)</td>
+                                    <td>Complex implementation</td>
+                                </tr>
+                                <tr>
+                                    <td>Transaction-scoped</td>
+                                    <td>TTL-based</td>
+                                </tr>
+                                <tr>
+                                    <td>Chỉ dùng khi có DB connection</td>
+                                    <td>Independent service</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <span class="tag">Advisory Locks</span>
+                        <span class="tag">Concurrency</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q57</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        BRIN Index - khi nào tốt hơn B-Tree?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>BRIN (Block Range INdex)</h4>
+                        <p>Lưu summary của 1 block pages (min/max values), không lưu từng row.</p>
+
+                        <h4>So sánh với B-Tree</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Feature</th>
+                                    <th>B-Tree</th>
+                                    <th>BRIN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Size</td>
+                                    <td>Lớn (1 row = 1 entry)</td>
+                                    <td>Nhỏ (1 block = 1 entry)</td>
+                                </tr>
+                                <tr>
+                                    <td>Accuracy</td>
+                                    <td>Chính xác</td>
+                                    <td>Xấp xỉ (lossy)</td>
+                                </tr>
+                                <tr>
+                                    <td>Query speed</td>
+                                    <td>Nhanh</td>
+                                    <td>Chậm hơn (scan nhiều blocks)</td>
+                                </tr>
+                                <tr>
+                                    <td>Insert speed</td>
+                                    <td>Chậm hơn</td>
+                                    <td>Nhanh (ít maintenance)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Khi nào dùng BRIN?</h4>
+                        <ul>
+                            <li>✅ Very large table (hàng tỷ rows)</li>
+                            <li>✅ Data có correlation với physical order (time-series)</li>
+                            <li>✅ Range queries trên timestamp</li>
+                            <li>✅ Storage space quan trọng</li>
+                        </ul>
+
+                        <h4>Ví dụ</h4>
+                        <div class="code-block">-- Time-series data, 10B rows
+CREATE INDEX idx_logs_time ON logs USING BRIN (created_at);
+
+-- Index size: B-Tree = 20GB, BRIN = 10MB</div>
+
+                        <div class="warning-box">
+                            <strong>⚠️ Yêu cầu:</strong> Data phải clustered theo BRIN column. Nếu không, BRIN không hiệu quả.
+                        </div>
+
+                        <span class="tag">BRIN</span>
+                        <span class="tag">Indexing</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q58</span>
+                        <span class="difficulty difficulty-medium">Medium</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Parallel Query Execution - khi nào PostgreSQL parallelize?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Parallel Query là gì?</h4>
+                        <p>Chia query thành nhiều workers chạy song song, tận dụng multi-core.</p>
+
+                        <h4>Khi nào parallelize?</h4>
+                        <ul>
+                            <li>Sequential scan trên large table</li>
+                            <li>Bitmap heap scan</li>
+                            <li>Nested loop joins</li>
+                            <li>Hash joins (build hash table song song)</li>
+                            <li>Aggregation (GROUP BY)</li>
+                        </ul>
+
+                        <h4>Settings</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Setting</th>
+                                    <th>Default</th>
+                                    <th>Ý nghĩa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>max_parallel_workers_per_gather</td>
+                                    <td>2</td>
+                                    <td>Workers cho 1 query</td>
+                                </tr>
+                                <tr>
+                                    <td>max_parallel_workers</td>
+                                    <td>8</td>
+                                    <td>Workers tổng</td>
+                                </tr>
+                                <tr>
+                                    <td>min_parallel_table_scan_size</td>
+                                    <td>8MB</td>
+                                    <td>Table lớn hơn mới parallel</td>
+                                </tr>
+                                <tr>
+                                    <td>parallel_tuple_cost</td>
+                                    <td>0.1</td>
+                                    <td>Chi phí transfer giữa workers</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Giới hạn</h4>
+                        <ul>
+                            <li>❌ Cursors không parallel</li>
+                            <li>❌ Subqueries trong WHERE không parallel</li>
+                            <li>❌ CTE không materialized không parallel</li>
+                            <li>❌ Locking queries không parallel</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>💡 PostgreSQL 9.6+:</strong> Parallel query support, improved in 10, 11, 12
+                        </div>
+
+                        <span class="tag">Parallel Query</span>
+                        <span class="tag">Performance</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q59</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Synchronous vs Asynchronous Replication?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>Asynchronous Replication (default)</h4>
+                        <ul>
+                            <li>Primary commit → trả về client ngay</li>
+                            <li>WAL gửi sang standby sau</li>
+                            <li>Nhanh hơn nhưng có lag</li>
+                        </ul>
+
+                        <h4>Synchronous Replication</h4>
+                        <ul>
+                            <li>Primary commit → đợi standby confirm → trả về client</li>
+                            <li>Không lag, nhưng chậm hơn (network round-trip)</li>
+                            <li>Có thể config số standby cần confirm (synchronous_standby_names)</li>
+                        </ul>
+
+                        <h4>So sánh</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Feature</th>
+                                    <th>Async</th>
+                                    <th>Sync</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Write latency</td>
+                                    <td>Thấp</td>
+                                    <td>Cao (+ network RTT)</td>
+                                </tr>
+                                <tr>
+                                    <td>Data loss risk</td>
+                                    <td>Có (lag window)</td>
+                                    <td>Không (0 RPO)</td>
+                                </tr>
+                                <tr>
+                                    <td>Failover</td>
+                                    <td>Có thể mất data</td>
+                                    <td>Zero data loss</td>
+                                </tr>
+                                <tr>
+                                    <td>Use case</td>
+                                    <td>Read replicas</td>
+                                    <td>Critical data</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Hybrid Approach</h4>
+                        <p>synchronous_commit = 'remote_apply' chỉ cho critical transactions:</p>
+                        <div class="code-block">SET synchronous_commit = 'remote_apply';
+BEGIN;
+-- Critical payment transaction
+COMMIT;
+SET synchronous_commit = 'local'; -- Back to async</div>
+
+                        <span class="tag">Replication</span>
+                        <span class="tag">High Availability</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card" onclick="toggleCard(this)">
+                <div class="question-header">
+                    <div class="question-meta">
+                        <span class="question-number">Q60</span>
+                        <span class="difficulty difficulty-hard">Hard</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="question-text">
+                        Database Capacity Planning - làm sao estimate?
+                    </div>
+                </div>
+                <div class="answer">
+                    <div class="answer-content">
+                        <h4>3 Dimensions</h4>
+                        <ul>
+                            <li><strong>Storage:</strong> Data size growth (MB/day)</li>
+                            <li><strong>Compute:</strong> CPU, Memory (queries, connections)</li>
+                            <li><strong>Throughput:</strong> IOPS, bandwidth (reads/writes per second)</li>
+                        </ul>
+
+                        <h4>Estimation Process</h4>
+                        <ol>
+                            <li><strong>Current metrics:</strong> Collect baseline (data size, QPS, latency)</li>
+                            <li><strong>Growth rate:</strong> Historical growth (month over month)</li>
+                            <li><strong>Project:</strong> Extrapolate 6-12 months</li>
+                            <li><strong>Headroom:</strong> Add 50% buffer for spikes</li>
+                        </ol>
+
+                        <h4>Example Calculation</h4>
+                        <div class="code-block">Current: 100GB, 1000 QPS
+Growth: 10GB/month, +10% QPS/month
+
+6 months projection:
+- Storage: 100 + (10 × 6) = 160GB × 1.5 = 240GB
+- QPS: 1000 × 1.1^6 = 1771 × 1.5 = 2656 QPS</div>
+
+                        <h4>Scaling Triggers</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Warning</th>
+                                    <th>Critical</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Storage</td>
+                                    <td>70%</td>
+                                    <td>85%</td>
+                                </tr>
+                                <tr>
+                                    <td>CPU</td>
+                                    <td>70%</td>
+                                    <td>85%</td>
+                                </tr>
+                                <tr>
+                                    <td>Memory</td>
+                                    <td>80%</td>
+                                    <td>95%</td>
+                                </tr>
+                                <tr>
+                                    <td>IOPS</td>
+                                    <td>70%</td>
+                                    <td>90%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Planning Checklist</h4>
+                        <ul>
+                            <li>✅ Hardware upgrade timeline (weeks/months)</li>
+                            <li>✅ Scaling strategy (vertical vs horizontal)</li>
+                            <li>✅ Cost estimation</li>
+                            <li>✅ Testing environment</li>
+                            <li>✅ Rollback plan</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>💡 Rule of thumb:</strong> Plan cho 3x current capacity trong 12-18 tháng
+                        </div>
+
+                        <span class="tag">Capacity Planning</span>
+                        <span class="tag">Scaling</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- End of Advanced Database Questions -->
+
+
+
         <!-- Kafka & Messaging -->
+
         <div class="category">
             <div class="category-header">
                 <span class="category-icon">📨</span>
