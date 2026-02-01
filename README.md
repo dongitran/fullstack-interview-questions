@@ -10,7 +10,6 @@ Trang web câu hỏi phỏng vấn Senior Fullstack Developer - Concepts & Trade
 
 - **30 câu hỏi** phỏng vấn Senior Fullstack Developer
 - **8 chủ đề** chính
-- Dành cho dev có **7+ năm kinh nghiệm**
 
 ## 📋 Topics Covered
 
