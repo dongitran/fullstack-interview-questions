@@ -656,15 +656,18 @@
                         <p><strong>Visualization:</strong> Jaeger/Zipkin hiển thị waterfall diagram</p>
 
                         <h4>Debug Example - Payment chậm (3.5 giây):</h4>
-                        <div class="code-block">API Gateway     : 5ms    █
-├─ Auth         : 50ms   ██
-├─ Payment      : 3500ms ████████████████████████████████  🔴 BOTTLENECK!
-│  ├─ Validate  : 5ms    █
-│  ├─ Gateway   : 3000ms ██████████████████████████       🔴 Vấn đề ở đây!
-│  └─ Save DB   : 450ms  ████                            🔴 Cũng chậm
-└─ Notification : 20ms   █
+                        <div class="code-block">Service              Time     Visual
+─────────────────────────────────────────
+API Gateway          5ms      █
+├─ Auth              50ms     ██
+├─ Payment           3500ms   ████████████████████████
+│  ├─ Validate       5ms      █
+│  ├─ Gateway        3000ms   ██████████████████████  ← 🔴 Vấn đề chính
+│  └─ Save DB        450ms    ███                     ← 🟡 Cũng chậm
+└─ Notification      20ms     █
 
-TỔNG: 3575ms</div>
+🔴 BOTTLENECK: Payment service (3.5s)
+   └─ Gateway call chiếm 3s (connection pool exhausted)</div>
 
                         <p><strong>Investigation:</strong></p>
                         <ul>
