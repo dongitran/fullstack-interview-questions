@@ -655,19 +655,58 @@
                         <p><strong>Spans:</strong> Mỗi operation tạo span với start time, end time, attributes</p>
                         <p><strong>Visualization:</strong> Jaeger/Zipkin hiển thị waterfall diagram</p>
 
-                        <h4>Debug Example - Payment chậm (3.5 giây):</h4>
-                        <div class="code-block">Service              Time     Visual
-─────────────────────────────────────────
-API Gateway          5ms      █
-├─ Auth              50ms     ██
-├─ Payment           3500ms   ████████████████████████
-│  ├─ Validate       5ms      █
-│  ├─ Gateway        3000ms   ██████████████████████  ← 🔴 Vấn đề chính
-│  └─ Save DB        450ms    ███                     ← 🟡 Cũng chậm
-└─ Notification      20ms     █
-
-🔴 BOTTLENECK: Payment service (3.5s)
-   └─ Gateway call chiếm 3s (connection pool exhausted)</div>
+                        <h4>Debug Example - Payment chậm:</h4>
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Service</th>
+                                    <th>Thờ gian</th>
+                                    <th>Ghi chú</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>API Gateway</td>
+                                    <td>5ms</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>├─ Auth</td>
+                                    <td>50ms</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>├─ Payment</td>
+                                    <td><strong>3500ms</strong></td>
+                                    <td>🔴 BOTTLENECK</td>
+                                </tr>
+                                <tr>
+                                    <td>│  ├─ Validate</td>
+                                    <td>5ms</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>│  ├─ Gateway Call</td>
+                                    <td><strong>3000ms</strong></td>
+                                    <td>🔴 Vấn đề chính</td>
+                                </tr>
+                                <tr>
+                                    <td>│  └─ Save DB</td>
+                                    <td>450ms</td>
+                                    <td>🟡 Cũng chậm</td>
+                                </tr>
+                                <tr>
+                                    <td>└─ Notification</td>
+                                    <td>20ms</td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <p><strong>Tổng: 3575ms</strong></p>
+                        
+                        <p><strong>🔴 Phát hiện:</strong> Gateway call chiếm 3000ms (85% thờ gian) → Connection pool exhausted</p>
 
                         <p><strong>Investigation:</strong></p>
                         <ul>
